@@ -16,5 +16,5 @@
 - [x] Build and serve the redesigned frontend at http://127.0.0.1:3000.
 - [x] Inspect actual 3D rendering and correct desktop and mobile layout defects on every page.
 - [x] Pass 162 automated tests and 28 accessibility, responsive and realtime browser checks.
-- [ ] Push the verified redesign milestone with a short one-line commit message.
-- [ ] Update the final acceptance evidence and hand off the working MVP.
+- [x] Push the verified redesign milestone with a short one-line commit message.
+- [x] Update the final acceptance evidence and hand off the working MVP.
