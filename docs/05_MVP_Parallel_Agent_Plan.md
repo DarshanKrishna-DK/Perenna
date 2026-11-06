@@ -1,14 +1,26 @@
 # Perenna parallel agent build plan
 
-Prepared on 6 November 2026 and approved for implementation. Three development agents are building the interface, server workflows and provider integrations in parallel. The architecture and sequence below record the approved design. Product source now exists; statements about future validation remain acceptance requirements, not evidence of completion.
+Updated on 6 November 2026. The original backend/provider implementation has a verified live vertical slice. The user's newer visual instruction supersedes the earlier interface: pitch black, neon green, supplied robot logo and a complete Three.js spatial rebuild across every page.
 
-Current acceptance checklist:
+## Current parallel work
 
-- Implemented and locally checked: authenticated durable business workspaces, intent correction, constrained supplier selection, exact quote authorization, cancellation, event recovery, separate policies, signed role evidence, fee authorization, contract limits and all eight styled bilingual pages.
-- Real provider evidence: seven 0G negotiation turns with three final quotes, plus four Sarvam English/Hindi synthesis and transcription calls. The original ten-call 0G allowance is exhausted.
-- Implemented and undergoing final checks: real protected HTTP challenge/retry, autonomous scheduled SPA orders, onchain agreement controls, profile editing and automated accessibility scans.
-- Still required for completion: fresh configured testnet signing identities, bounded wallet authority, actual Hedera goods and service settlement, deployed SPA with a repeat order and blocked exception, and an Arkiv write/query that affects screening. No mock closes these gates.
-- Secondary research gate: a supported earned-revenue route into actual 0G compute credit remains unproved. No automatic top-up or self-funding claim is enabled.
+- Experience agent: all eight page compositions, navigation, onboarding and accessible functional HUDs. Preserve authenticated workflows, immutable approvals, private rooms and real status.
+- Design agent: complete shared CSS and one DESIGN.md. Use the explicit black/neon brief, robotic typography, shaped spatial surfaces, responsive layouts and reduced motion.
+- 3D agent: one persistent Three.js world with eight scene variants, extruded local text, courier robot, supplied logo/favicon, local fonts, adaptive quality and a WebGL fallback.
+- Root: protect provider budgets, integrate changes, review actual desktop/mobile renders, run browser and automated checks, maintain the single manual guide, and push verified milestones to the requested GitHub repository.
+
+## Verified core and remaining gates
+
+- Actual 0G mainnet API inference completed parsing, three-supplier public negotiation and a private immutable revision. All 20 authorized attempts are exhausted. The output ceiling is now 512; testnet 0G tokens do not extend API credits.
+- Actual Hedera testnet service, goods and separate supplier-fee settlement, signed-review funding, bilateral SPA activation, two autonomous purchases, dispute stop, pause, revocation and withdrawal are verified.
+- Five Arkiv writes and readback are verified. A later query changed both positive and adverse supplier eligibility under the same future policy. No further write is authorized.
+- The conservative combined Hedera upper bound is 6.19513096 HBAR, below 10. Unknown EVM fee attribution retains maxima; no submitted transaction outcome remains unresolved.
+- Earlier source passed 161 tests and a production build; the new rejected-reservation regression also passes. Final tests, 3D screenshots, accessibility, responsive and realtime checks must be rerun for the redesigned interface.
+- Public source checkpoints d7e243e and 611e56c are pushed to feat/mvp. Push each verified major feature milestone or after one to two hours of active development, with one short understandable commit subject.
+- New paid inference, public writes and Hedera execution are paused after the bounded verification. Retained receipts remain available.
+- Self-financing earned fees into 0G compute and external customer demand remain unproved. Neither is inferred from synthetic records or testnet revenue.
+
+## Earlier approved architecture
 
 ## Approved design
 

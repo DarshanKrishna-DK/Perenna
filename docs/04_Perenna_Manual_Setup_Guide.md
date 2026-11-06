@@ -2,55 +2,39 @@
 
 ## What you still need to do
 
-Updated on 6 November 2026. Implementation is underway under the approved [build plan](05_MVP_Parallel_Agent_Plan.md). This checklist supersedes the older setup status retained below.
+Updated on 6 November 2026. The backend and bounded live integration flow are verified. The user-requested black, neon-green Three.js rebuild is in progress across all eight pages; its final visual and browser checks are pending. The local application runs at http://127.0.0.1:3000.
 
-The local application runs at http://127.0.0.1:3000. Latest verification passed 161 automated tests across 39 files and the production build. An earlier browser checkpoint passed 28 desktop/mobile scenarios. The complete live blockchain flow remains unverified. The newer live proofs below do not establish full MVP completion.
+- Review the rebuilt interface and retained live receipts when the new preview is ready.
+- Rotate the test keys after the working MVP is ready, as you requested. This is not a current build gate.
+- To rerun paid inference or publish more records, provide a new explicit bounded allowance first. The existing inference and Arkiv allowances are exhausted. No further spending is required to review the retained demo.
 
-Only these actions currently need your input:
+No additional account setup, faucet, wallet funding or renewed approval is blocking the current build. Paid inference, Arkiv writes and Hedera execution flags are paused in the private local configuration after verification.
 
-- Review the working MVP and its actual live evidence. Existing approvals below cover the bounded provider and testnet checks, so they do not need to be requested again.
-- Rotate the previously displayed testnet keys after the working MVP is ready. You explicitly deferred rotation until then; it is not a current build gate.
+## Verified integration checkpoint
 
-No other action or renewed approval is currently pending within the recorded scope.
+| Area | Actual evidence |
+| --- | --- |
+| 0G | Twenty authorized attempts used the user-confirmed mainnet API key. English/Hindi parsing, a seven-call three-supplier negotiation and a private Mango revision succeeded. Output is now capped at 512 tokens. Exact mainnet token cost and remaining credit balance are unknown. Ten testnet 0G tokens do not extend this inference allowance. |
+| Hedera | Separate funded operating/executor 0.0.11332965, SPA supplier 0.0.11332983 and fee/top-up 0.0.11332984 are verified. Buyer 0.0.6886052 and native merchant 0.0.9823983 remain distinct. A signed-review 0.3 HBAR top-up, automatic 1,000-tinybar protected service purchase, exact 113,950-tinybar goods payment and separately approved 950-tinybar fee are confirmed. |
+| Standing agreement | Reviewed registry runtime, buyer creation and supplier acceptance are verified. Two real scheduled purchases paid 14,222 tinybars each under prior bilateral authority and a 60-second cadence. Simulated dispute, on-chain pause, revocation and unused-funding withdrawal are confirmed; remaining contract funding is zero. |
+| Arkiv | All five approved Rabdi records are confirmed and read back. A future request queried both bilateral signed simulated-outcome records. Monsoon changed from 78/ineligible to 80/eligible; Mango changed from 91/eligible to 79/ineligible at threshold 80. |
+| Speech | Four actual Sarvam calls passed English/Hindi synthesis-to-transcription checks. Human microphone and listening acceptance remain unverified. Groq inference has not run. |
+| Source | Tested milestones are pushed to the Perenna feature branch. No public application deployment or event submission has occurred. |
 
-**0G billing correction:** the user confirmed that the configured API key is a mainnet inference key. Its calls consume mainnet credits/tokens. Exact mainnet token consumption and remaining balance are unknown and have not been verified. All 20 historically authorized calls are consumed, so no further 0G call is authorized. The separate 10 testnet 0G tokens are not an inference-credit balance or an additional allowance. Hedera chain 296 and Arkiv chain 7794095 remain testnet blockchain transactions; they do not determine 0G API billing.
+## Budget boundaries
 
-| Step | Your action | What I can handle |
-| --- | --- | --- |
-| 1. Keep browser available | Keep the existing Chrome profile available for account setup. | Desktop Commander remote was repaired using an isolated npm cache. BrowserAct verified access to the existing signed-in Hedera portal. The native Codex browser bridge remains unavailable. |
-| 2. Prepare 0G | All 20 authorized mainnet API attempts are consumed; failed attempts count. No further 0G calls are authorized. The separate 10 testnet 0G tokens add no inference allowance. | Live negotiation, English/Hindi parsing and a private Mango revision used the mainnet-billed key. The final private reply used the 512-token ceiling. Exact mainnet token cost and remaining balance are unverified. |
-| 3. Fund Arkiv writer | Faucet receipt of 10 tGLM is confirmed. Up to five writes are approved, at most 0.002 tGLM each and 0.01 tGLM total; two writes are used. | Both actual writes were confirmed and read back. Current request version 2 under policy 3 passes live discovery. The dedicated writer remains `0x9253705482a44e6A7378163e57cc791AE6213ed5`; its key stays in `.env.local`. |
-| 4. Prepare Hedera | The user approved creation fees up to 1.1 HBAR per role within the shared 10 HBAR ceiling, with initial role funding of 0.1, 0.2 and 0.5 HBAR. Rotation remains deferred. | Funded roles are verified: operating/executor `0.0.11332965`, SPA supplier `0.0.11332983`, fee/top-up `0.0.11332984`. Original native merchant `0.0.9823983` is preserved. The conservative setup commitment is 4.5233928 HBAR, including the deployment reserve and earlier failed fee. |
-| 5. Confirm provider budgets | Already authorized: Sarvam up to 100 credits, Groq within its available daily allowance, and 20 bounded 0G calls in total. | Four real Sarvam calls passed English and Hindi synthesis-to-transcription checks. Human microphone and listening acceptance remain pending. Groq inference has not run at this checkpoint. |
-| 6. Approve bounded execution | Existing approvals cover the bounded checks. No additional 0G call allowance is assumed. Application reviews are verified against their exact terms. | A real x402 service purchase returned confirmed HTTP 200. Buyer creation and supplier acceptance activated the SPA; two scheduled orders paid 14222 tinybars each under prior bilateral authority. A simulated dispute then stopped local execution and an application-confirmed onchain pause blocked future execution. One-off goods, separate fees and signed evidence publication remain unverified. |
-| 7. Review the running MVP | Review the local screens and final acceptance evidence when ready. | Parallel implementation covers all eight pages, durable authenticated procurement, negotiation jobs, payment reconciliation, signed evidence and bounded standing agreements. Automated checks are running; required live blockchain evidence remains pending. |
+- Hedera remains inside the approved 10 test HBAR ceiling. The conservative combined upper bound is 6.19513096 HBAR, including retained fee maxima, both autonomous execution fee ceilings and the native service/goods/fee amounts. This is not an exact actual-spend claim. Seven EVM fee attributions remain conservatively reserved; there are no unresolved submitted transaction outcomes.
+- Arkiv used five of five approved writes. Each retained write maximum was 0.001 tGLM, below the authorized 0.002 per-write cap; the combined retained maximum is 0.005 tGLM, below 0.01. No further Arkiv write is authorized.
+- All 20 mainnet-billed 0G attempts are consumed. Earlier attempts retained their then-approved 900-token maximum; the final private reply passed under 512. Exact token charges and credit balance were not verified.
+- Sarvam's approved ceiling remains 100 credits, with only the recorded four verification calls made. Remaining credit value is unverified.
 
-Do not paste API keys, wallet seeds or private signing keys into chat. Store credentials only in the approved local secret mechanism. Owner login, human verification, initial wallet consents and signed funding reviews remain explicit. Within a valid exact goods approval or previously signed operating/agreement policy, the application can execute its bounded payments without another payment dialog.
+## Limits and review notes
 
-### Latest live evidence
+Physical delivery and dispute events are explicitly simulated. Real signatures and blockchain receipts do not establish independent business identity, physical truth or commercial revenue. The master prompt's separate-ledger, human-funded compute boundary is implemented; a fee-to-0G self-financing route is not established. Browser-wallet extension signing and human microphone acceptance remain separate owner checks.
 
-- SPA registry: `0x70a836F8bEaDCF6Fe57278a0E1E6Ba25ad1dF637`, transaction [`0x32bcdafd03a0213b5c49f41cef72f97ce84aaa910b370c798e2fbaa2f048ee2a`](https://hashscan.io/testnet/transaction/0x32bcdafd03a0213b5c49f41cef72f97ce84aaa910b370c798e2fbaa2f048ee2a). Runtime matches reviewed hash `0x0670d32069ae27c015ac89c4b75efc1311d9952aea8fe40df3dcde5e5affe0e4`. The retained maximum is not an actual-fee claim.
-- Failed native role creation: `0.0.6886052-1793929735-629904636`, consensus `INSUFFICIENT_TX_FEE`, actual charge 0.0029589 HBAR, no created account and no resend.
-- Subsequent role setup is verified and funded: operating/executor `0.0.11332965`, SPA supplier `0.0.11332983`, fee/top-up `0.0.11332984`. The original native merchant `0.0.9823983` remains separate. Setup conservatively commits 4.5233928 HBAR, including the unresolved deployment reserve and original failed fee.
-- Operating top-up: 0.3 HBAR, transaction [`0x16cf9611b7afef46b22442445d5da2a6080526554a961919751e481e72cfed6f`](https://hashscan.io/testnet/transaction/0x16cf9611b7afef46b22442445d5da2a6080526554a961919751e481e72cfed6f). The application returned HTTP 200 after confirming the exact signed review and receipt.
-- Paid capacity service: purchase `95ec2b50-8a0c-4060-83a8-197a078b9082`, 1000 tinybars, native transaction `0.0.9185802@1793932008.022979442`, confirmed application HTTP 200. The unsigned failed attempt and explicit retry are preserved; only one payment occurred.
-- SPA buyer creation `0x2a9338c49b776e91e0dd2d10cf6220d803638fca6e710182d6071b2c7d02742f` and supplier acceptance `0xaefeadb80ccafd8dded07cd6f5104de51b0fafdc103b2ef01fac7475d8746006` are application-confirmed. Two scheduled payments of 14222 tinybars followed the signed 60-second cadence: `0xcdecf2a288eab2c9932a486d7eab83219ecc6fdf963fb26cf810ae96a3777bf6` and `0xf177f45f526fa0078956bb8893d844d5f919f0325b7f768d44084cd279216295`. The earlier rejected preparation remains without a payload or hash.
-- Native 0G parse requests: English `15540326-38ce-4061-ba4c-152510a3756e`; Hindi `72e5bba5-90aa-4e18-a250-b59995d51137`. A later seven-call public negotiation produced three quotes using live Arkiv discovery of request version 2 under policy 3. Usage is now 20 of 20 attempts. The final private Mango reply, request `67f0e961-0d55-480b-8981-d97fc2f3a2c1`, produced quote version 2: unit price 2150 minor INR versus 2200, total 120575 minor INR. It succeeded under the 512-token ceiling. The full 20-call allowance is exhausted; no further 0G calls are authorized.
-- A simulated dispute on the second SPA order immediately stopped local future execution. Exact onchain pause `0x9718247d7c879e3b9890195df53876ce8779b21829d39b49d865c6cc7c9388a4` was application-confirmed with HTTP 200 and status `paused`. This is a simulated physical dispute, not a claim of real delivery failure.
-- Arkiv has two confirmed writes with readback, using two of five approved writes. Current request version 2 under policy 3 passes live discovery: entity `0xa0b97c98f56022865db9375f3065ee010655a79b5c8d3776393d3ceb9153f562`, transaction `0x17c3cd5f5cd5b923bb75edb422e41f8690f5fc63479b01992138ffd2861aaadb`. Schema `perenna.intent.v2` separates offer expiry from delivery and publishes opaque commitments, not raw tenant/intent UUIDs. Both write references are retained in [prize-evidence.md](prize-evidence.md).
+The current Hedera skill-rubric assessment is [63/100](06_Hedera_Feasibility_Review.md), an assistant assessment rather than an official judge score. Transaction references and public schemas are consolidated in [prize-evidence.md](prize-evidence.md). New design guidance is in the root DESIGN.md.
 
-Periodic Git pushes to the existing Perenna repository are now authorized. The first `feat/mvp` milestone is being prepared; no commit or push success is claimed yet. This does not authorize application hosting or event submission.
-
-### Historical preparation status
-
-The following entries describe the preparation checkpoint, not current completion. The 32/100 score predates implementation and has not been rerun against the finished MVP.
-
-- Hedera Docs and Arkiv General MCPs work as native tools in this conversation. The official Arkiv Mumbai MCP was also verified and registered.
-- Seven project skills are installed and discoverable, including the Hedera submission validator. Its current evidence score is [32/100](06_Hedera_Feasibility_Review.md), not an official judge score.
-- At the historical preparation checkpoint, Groq and Sarvam model-list authentication succeeded. That limited check does not describe the later mainnet-billed 0G inference calls recorded above.
-- The x402 facilitator advertises Hedera testnet support. No payment, signature, contract deployment or product integration has run.
-
-The three selected partners remain Arkiv, Hedera and 0G. Additional MCPs are optional; they do not replace runtime accounts or SDK integration. No new paid plan or token purchase is required by this guide. Actual 0G inference used the mainnet-billed API key, as corrected above; its exact monetary/token usage remains unknown.
+Store credentials only in the private local configuration. Do not paste signing keys into chat. The source repository excludes credentials, local state and generated artifacts.
 
 ## Original detailed setup reference
 
