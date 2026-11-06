@@ -1,0 +1,171 @@
+{
+  "installed_on_local_date": "2026-11-06",
+  "scope": "project .agents/skills",
+  "skills": [
+    {
+      "name": "agent-kit-policy",
+      "repository": "hedera-dev/hedera-skills",
+      "commit": "8b1fccd8ccbbe73e928037b76028caf79900b12e",
+      "files": [
+        {
+          "path": ".agents/skills/agent-kit-policy/examples/max-amount-policy/index.ts",
+          "sha256": "2b1b202e8848520e331d33fdce29fafa0a8144fbdd5ad454ee66b7e28bda185d"
+        },
+        {
+          "path": ".agents/skills/agent-kit-policy/references/policy-interface.md",
+          "sha256": "149867d0af5f2519b11a791573d59c8b02581d403599eaa89ca1ccc0169aadb3"
+        },
+        {
+          "path": ".agents/skills/agent-kit-policy/SKILL.md",
+          "sha256": "2b5b77ca1d91f25a45cde6984bdec57f546c5960d3a6a677794bd016ccc1786f"
+        }
+      ]
+    },
+    {
+      "name": "arkiv",
+      "repository": "Arkiv-Network/skills",
+      "commit": "51d22fd0485130d701f2340fe003d71101ad571d",
+      "files": [
+        {
+          "path": ".agents/skills/arkiv/references/disambiguation.md",
+          "sha256": "1df46e2c6ee571b37fe29ecc65f77a096aa605fa860b0ee403c6608bd145b5fe"
+        },
+        {
+          "path": ".agents/skills/arkiv/references/import-check.md",
+          "sha256": "cc393f983028825c9c909653c3b49c56146a04a7df13b976ddf06f75aa1e5f24"
+        },
+        {
+          "path": ".agents/skills/arkiv/references/known-issues.md",
+          "sha256": "e02a4d956a6b68e4fa595b12586d800b3dc4e0445702bc3b2436bd3fe58a5634"
+        },
+        {
+          "path": ".agents/skills/arkiv/references/limits.md",
+          "sha256": "54e48709dee4c1cd685cfb7a63d19273baeb21d4c5ac5b78ae18dd1c1608d171"
+        },
+        {
+          "path": ".agents/skills/arkiv/scripts/check-imports.mjs",
+          "sha256": "470473a65c6e3a434699fff638dd3597e3530e7a997d775ccb14e03bcc7aa351"
+        },
+        {
+          "path": ".agents/skills/arkiv/SKILL.md",
+          "sha256": "f7bdc206d18ab22eae2d5b4d9c9433c38af4b00616b460afe57c094fc154ba87"
+        }
+      ]
+    },
+    {
+      "name": "arkiv-mcp",
+      "repository": "Arkiv-Network/skills",
+      "commit": "51d22fd0485130d701f2340fe003d71101ad571d",
+      "files": [
+        {
+          "path": ".agents/skills/arkiv-mcp/references/protocol-preflight.md",
+          "sha256": "5dc8c8e3702df41954b528ee385f62978239e0104c5f4e2d67bf1112de09c9ad"
+        },
+        {
+          "path": ".agents/skills/arkiv-mcp/SKILL.md",
+          "sha256": "2174e9cfcc6e84b163dd055c5114cdd894b828dc1ee18a4994be003cc00155f0"
+        }
+      ]
+    },
+    {
+      "name": "hackathon-prd",
+      "repository": "hedera-dev/hedera-skills",
+      "commit": "8b1fccd8ccbbe73e928037b76028caf79900b12e",
+      "files": [
+        {
+          "path": ".agents/skills/hackathon-prd/references/judging-criteria.md",
+          "sha256": "02b27a2bbe6239d2c4baf786a72fa97307c872dd871d68fd71ff0c045067a99f"
+        },
+        {
+          "path": ".agents/skills/hackathon-prd/references/prd-template.md",
+          "sha256": "593c29d040723d96eee1c41185480549f128bc9608c521a9ff6b2ca4ec9bb25b"
+        },
+        {
+          "path": ".agents/skills/hackathon-prd/SKILL.md",
+          "sha256": "d5091ff1a0aaead2e7acc19557b8289d37fb9730c2896cb3202e9c79540ca65d"
+        }
+      ]
+    },
+    {
+      "name": "hts-system-contract",
+      "repository": "hedera-dev/hedera-skills",
+      "commit": "8b1fccd8ccbbe73e928037b76028caf79900b12e",
+      "files": [
+        {
+          "path": ".agents/skills/hts-system-contract/evals/evals.json",
+          "sha256": "7a117e10b2a38e537e49dab3121f8185407d3eb9cdb993daec20c83b30c2d056"
+        },
+        {
+          "path": ".agents/skills/hts-system-contract/evals/spec.json",
+          "sha256": "9eb95fd11617bdf45606864afb74d192231fb5854bf7c556d939c8ab0ce6d442"
+        },
+        {
+          "path": ".agents/skills/hts-system-contract/references/api.md",
+          "sha256": "1c7030225d19ce23f227731fd5c64854f0e5294eec82144a0f43a18b70b71018"
+        },
+        {
+          "path": ".agents/skills/hts-system-contract/references/compliance.md",
+          "sha256": "f69a53de900cadb3c850648f7d2ea7f8f4fff44bb2b302ca89763782bbd9f156"
+        },
+        {
+          "path": ".agents/skills/hts-system-contract/references/fees.md",
+          "sha256": "ad930f9130241afbec09a5e6d21e9e66427732ae6d35acbb18864d5bb250abd5"
+        },
+        {
+          "path": ".agents/skills/hts-system-contract/references/keys.md",
+          "sha256": "528f17ab77d687c756bc8ef5fa47095e662af7b55d4b641f3db8758344b3e5d0"
+        },
+        {
+          "path": ".agents/skills/hts-system-contract/references/response-codes.md",
+          "sha256": "4d4b9984abdb3038b23d078272d053ed604474274336990c09be47cf7bc78d08"
+        },
+        {
+          "path": ".agents/skills/hts-system-contract/references/structs.md",
+          "sha256": "cf8c8c264b49f4f151175120ab10db43d496e551c76495d2604531ae297bfbe8"
+        },
+        {
+          "path": ".agents/skills/hts-system-contract/references/troubleshooting.md",
+          "sha256": "66edbd096c743a2d99383a0b854506c14d3ca4373a4464e0bcff7e3b1d9d5648"
+        },
+        {
+          "path": ".agents/skills/hts-system-contract/SKILL.md",
+          "sha256": "96243471b2a74cd23e4e685020c3556dffc666e9a8f4384ea5d93a9cb61e9b9a"
+        }
+      ]
+    },
+    {
+      "name": "validate-submission",
+      "repository": "hedera-dev/hedera-skills",
+      "commit": "8b1fccd8ccbbe73e928037b76028caf79900b12e",
+      "files": [
+        {
+          "path": ".agents/skills/validate-submission/references/judging-criteria.md",
+          "sha256": "02b27a2bbe6239d2c4baf786a72fa97307c872dd871d68fd71ff0c045067a99f"
+        },
+        {
+          "path": ".agents/skills/validate-submission/SKILL.md",
+          "sha256": "b188a281e2552a1fa6d2f8370888b9ff525f80cb42c61cdfd5d3e9f9d6341367"
+        }
+      ]
+    },
+    {
+      "name": "x402-payments",
+      "repository": "hedera-dev/hedera-skills",
+      "commit": "8b1fccd8ccbbe73e928037b76028caf79900b12e",
+      "files": [
+        {
+          "path": ".agents/skills/x402-payments/references/examples.md",
+          "sha256": "c390b46b9c75cda2c5231a2ebac6d59f80b7a6a4d30e99758947025cc71209a5"
+        },
+        {
+          "path": ".agents/skills/x402-payments/references/facilitator.md",
+          "sha256": "c67bcc71cf87471d650cb1c4aff7a916e5984416ac48543ce04469d3251be508"
+        },
+        {
+          "path": ".agents/skills/x402-payments/SKILL.md",
+          "sha256": "3f94d136bc6ac4a3bced61de1ebbba4ec60f6b9a1b17db8ce5ccb6a74f7f9c38"
+        }
+      ]
+    }
+  ]
+}

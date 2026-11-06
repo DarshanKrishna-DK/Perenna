@@ -1,0 +1,10 @@
+import {createHash} from 'node:crypto';
+import {describe,expect,it} from 'vitest';
+import {PrivateKey} from '@hiero-ledger/sdk';
+import {buildUnsignedRoleTransactions} from '../scripts/prepare-hedera-roles.mjs';
+const hash=(value:unknown)=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
+function plan(){const roles=[['operating_executor','10000000'],['spa_supplier','20000000'],['platform_fee_topup','50000000']].map(([id,initialBalanceTinybar])=>({id,initialBalanceTinybar,maximumNetworkFeeTinybar:'10000000',publicKeyDer:PrivateKey.generateECDSA().publicKey.toStringDer()}));const body={buyerAccountId:'0.0.6886052',network:'hedera:testnet',roles,worstCaseTotalTinybar:'110000000'};return {...body,planHash:hash(body)};}
+describe('dry-run separate ECDSA role accounts',()=>{
+ it('builds three unfrozen unsigned aliased SDK creations within exact1.1HBAR worst-case scope',()=>{const prepared=buildUnsignedRoleTransactions(plan());expect(prepared).toHaveLength(3);let worst=0n;for(const role of prepared){expect(role.transaction.alias).not.toBeNull();expect(role.transaction.key).not.toBeNull();expect(role.transaction.isFrozen()).toBe(false);expect(role.transaction.transactionId).toBeNull();expect(role.transaction.maxTransactionFee?.toTinybars().toString()).toBe('10000000');worst+=BigInt(role.transaction.initialBalance!.toTinybars().toString())+BigInt(role.transaction.maxTransactionFee!.toTinybars().toString());}expect(worst).toBe(110000000n);});
+ it('rejects changed planhash, buyer, roles or funding even if a modified public body is rehashed',()=>{const original=plan();expect(()=>buildUnsignedRoleTransactions({...original,planHash:'changed'})).toThrow('immutable');const {planHash,...body}=original;for(const change of [{buyerAccountId:'0.0.9'},{roles:body.roles.slice(1)},{roles:body.roles.map((role,index)=>index===0?{...role,initialBalanceTinybar:'100000000'}:role)}]){const modified={...body,...change};expect(()=>buildUnsignedRoleTransactions({...modified,planHash:hash(modified)})).toThrow();}});
+});

@@ -1,0 +1,53 @@
+{
+  "checked_at_utc": "2026-11-05T21:06:32.803714+00:00",
+  "endpoint": "https://mcp.arkiv.network/",
+  "protocol": "2025-03-26",
+  "server_info": {
+    "name": "arkiv-general",
+    "version": "2.1.0"
+  },
+  "tools": [
+    "server_status",
+    "search_knowledge",
+    "read_knowledge",
+    "list_knowledge",
+    "network_status",
+    "list_packages",
+    "get_package",
+    "list_skills",
+    "get_skill",
+    "get_workflow",
+    "submit_feedback",
+    "report_outcome",
+    "generate_entity_model",
+    "verify_entity",
+    "verify_tx"
+  ],
+  "tool_results": {
+    "server_status": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"id\":\"general\",\"campaign\":null,\"path\":\"/\",\"label\":\"General\",\"environment\":\"production\",\"serverVersion\":\"2.1.0\",\"contentRevision\":\"d691e7f69d3e7681\",\"configRevision\":\"2026-10-30.1\",\"trafficClass\":\"live\"}"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 20
+    },
+    "network_status": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"name\":\"Rabdi\",\"sdk\":\"1.0.1\",\"chainId\":7794095,\"sdkSource\":{\"version\":\"1.0.1\",\"url\":\"https://registry.npmjs.org/@arkiv-network/sdk/-/sdk-1.0.1.tgz\",\"integrity\":\"sha512-DCOFdGunn4I5nYrvIV/YIkMCkLZM7EQNSyNPtqpmQkP2JzTEfRLBJleBSB2rokWMa833/9P8DMiwsEXACr3CUQ==\",\"verifiedAt\":\"2026-11-03T05:47:51.029Z\",\"method\":\"npm_integrity_verified_pinned_package\",\"scope\":\"published_source_identity_not_application_certification\"},\"rpcUrl\":\"https://rpc.rabdi.db-chain.testnet.arkiv.network\",\"websocketUrl\":\"wss://rpc.rabdi.db-chain.testnet.arkiv.network\",\"explorerUrl\":\"https://rabdi.explorer.arkiv.network\",\"dataExplorerUrl\":\"https://rabdi.explorer.arkiv.network/entity-explorer\",\"faucetUrl\":\"https://hub.arkiv.network/faucet\",\"quickstartUrl\":\"https://docs.arkiv.network/start-here/first-entity/\",\"accessKeysUrl\":\"https://hub.arkiv.network/access-keys\",\"installCommand\":\"npm install @arkiv-network/sdk@1.0.1 viem\",\"source\":\"https://registry.npmjs.org/@arkiv-network/sdk/1.0.1\",\"configurationVerifiedAt\":\"2026-11-03T05:33:15.793Z\",\"checkedAt\":\"2026-11-05T21:06:32.645Z\",\"status\":\"verified\",\"freshProbe\":true,\"evidence\":\"network_chain_id_verified\",\"verificationScope\":\"rpc_chain_id_only\",\"developmentGuidance\":{\"schemaVersion\":1,\"chainId\":7794095,\"stateReads\":\"latest\",\"headOnlyError\":{\"code\":-32603,\"message\":\"arkiv serves state at the chain head only\"},\"singleCreate\":{\"gas\":\"max(1000000, 2 * unsigned estimate at latest)\",\"gasPrice\":\"read eth_gasPrice\",\"nonce\":\"read eth_getTransactionCount at latest\",\"receiptStatusRequired\":\"success\",\"automaticWriteRetries\":0,\"gasFloor\":\"1000000\",\"estimateFailure\":\"stop before approval or signing\"},\"maximumLifetime\":{\"blocks\":\"7884000\",\"observedAt\":\"2026-10-30T23:57:40.317Z\",\"observedBlock\":\"9484\",\"error\":\"ExpiryBeyondMaxLifetime\",\"transactionHash\":\"0xa59744ddf10bd6f59bf5f7f7dfc2b9396743be80e0ea7c76cebe8f2ed9b30f7d\",\"sourceKind\":\"confirmed_reverted_create_with_maximum_u64_deadline\",\"limitation\":\"Dated Rabdi observation, not an immutable network limit. Read the current limit when supported and choose a shorter lifetime.\",\"unlimitedExpirationSupported\":false,\"longerLivedData\":\"Authorize Lifetime Extension before Entity Expiration; verify the current limit and a successful receipt.\",\"sdkVersion\":\"1.0.0\",\"scope\":\"Historical SDK 1.0.0 measurement: October 30, 2026; use the SDK 1.0.1 guidance for new code.\"},\"writeSafety\":{\"signature\":\"Before every new signature for N operations, require gas >= max(1_000_000 + 400_000 \u00d7 (N \u2212 1), 2 \u00d7 estimate at latest) and gas <= latest block gasLimit / 2. Stop if estimation fails or either bound cannot be met. Use a fresh nonce from latest and current gasPrice; recheck permission, balance, approved spend and the frozen intent before signing.\",\"retry\":\"Allow at most one retry per operation, only after an authoritative reverted receipt proves gas exhaustion (gasUsed === gasLimit), the SDK did not report success, and a fresh estimate fits the half-block bound with a fresh nonce and gasPrice. Corrected gas must also meet the operation floor and be at least twice the previous gas cap. Never resend after SDK success or an uncertain submission, even if a later receipt lookup is missing or disagrees. Reconcile every other outcome without another signature.\",\"automaticWriteRetries\":0},\"sdk101\":{\"sdkRange\":\"^1.0.0\",\"verifiedSourceVersion\":\"1.0.1\",\"maximumLifetime\":\"ExpirationTime.max(), MAX_LIFETIME = 7_884_000n; counted from inclusion, including each Lifetime Extension\",\"overMaximum\":\"InvalidExpiryError before sending; no transaction\",\"gasOmitted\":\"min(estimate \u00d7 125/100, 2^24); estimates above 2^24 are left as is\",\"callerGas\":\"used as is\",\"outOfGas\":\"EntityMutationError\",\"recommendation\":\"Use the complete explicit signature, half-block and authoritative-receipt policy in guides/quickstart; no automatic retries.\"},\"probedOnRequest\":false,\"documents\":[\"guides/quickstart\",\"guides/known-issues\",\"guides/events-and-expiration\"]},\"linksVerification\":{\"mode\":\"configuration_snapshot\",\"checkedAt\":null,\"probedOnRequest\":false,\"sources\":{\"explorerUrl\":{\"url\":\"https://rabdi.explorer.arkiv.network\",\"sourceUrl\":\"https://registry.npmjs.org/@arkiv-network/sdk/1.0.1\",\"evidence\":\"Published SDK configuration; this link was not probed on this request.\"},\"dataExplorerUrl\":{\"url\":\"https://rabdi.explorer.arkiv.network/entity-explorer\",\"sourceUrl\":\"https://registry.npmjs.org/@arkiv-network/sdk/1.0.1\",\"evidence\":\"Published SDK configuration; this link was not probed on this request.\"},\"faucetUrl\":{\"url\":\"https://hub.arkiv.network/faucet\",\"sourceUrl\":\"https://registry.npmjs.org/@arkiv-network/sdk/1.0.1\",\"evidence\":\"Published SDK configuration; this link was not probed on this request.\"},\"quickstartUrl\":{\"url\":\"https://docs.arkiv.network/start-here/first-entity/\",\"sourceUrl\":\"https://registry.npmjs.org/@arkiv-network/sdk/1.0.1\",\"evidence\":\"Published SDK configuration; this link was not probed on this request.\"},\"accessKeysUrl\":{\"url\":\"https://hub.arkiv.network/access-keys\",\"sourceUrl\":\"https://registry.npmjs.org/@arkiv-network/sdk/1.0.1\",\"evidence\":\"Published SDK configuration; this link was not probed on this request.\"}}},\"explorers\":{\"probedOnRequest\":false,\"transactionUrlTemplate\":\"https://rabdi.explorer.arkiv.network/tx/{transactionHash}\"},\"anonymousRpc\":{\"instruction\":\"Anonymous RPC is heavily rate limited. Obtain your own free access key at the Hub; it does not raise this MCP limit.\",\"currentEnforcementVerified\":false},\"onboarding\":{\"funding\":{\"requiredForWrites\":true,\"instruction\":\"Before a local write, fund the signing wallet with test GLM from faucetUrl. Complete wallet sign-in and any CAPTCHA yourself, then check the wallet balance locally.\"},\"accessKeys\":{\"requiredForPublicRpc\":false,\"requiredForApplication\":true,\"requiresAccessKeyArgument\":true,\"anonymousAccess\":\"heavily_limited\",\"applicationUserAuthentication\":false,\"instruction\":\"Obtain your own Rabdi access key at the Hub and configure rabdi({ accessKey }) in your local application. The MCP probes anonymously and may need an access key to establish network health. Funding is a separate requirement for writes.\",\"guidance\":{\"url\":\"https://hub.arkiv.network/access-keys\",\"urlSource\":\"sources.accessKeysUrl.url\",\"checkedAt\":\"2026-11-03T05:33:15.793Z\",\"instruction\":\"The human obtains their own free Rabdi access key at the linked Hub page and configures it locally with the SDK as rabdi({ accessKey }). Keep it in a server-side environment variable on the backend. Never include access keys in a browser bundle, MCP arguments, connection URLs or logs. A key pasted into chat is exposed: do not echo or use it; arrange replacement locally. The MCP has no Arkiv key. A user key does not raise this MCP's own verification limits; use your own application for heavier reads.\"}},\"security\":\"Keep private keys and access keys local to your application; never send them to this MCP or include them in its connection URL. Signing and writes run in your local project under your permissions.\"},\"limitation\":\"A successful chain-ID response verifies only the configured RPC chain ID. It does not verify WebSocket connections, explorer or faucet health, writes, application completion, or current block progress. Onboarding links are a dated configuration snapshot, not live probes.\"}"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 21
+    }
+  },
+  "note": "Direct read-only MCP protocol check. No wallet, entity writes, event profiles, project schema, feedback, or report_outcome calls."
+}

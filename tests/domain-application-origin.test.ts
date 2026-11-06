@@ -1,0 +1,18 @@
+import {beforeAll,describe,expect,it,vi} from 'vitest';
+const mocked=vi.hoisted(()=>({start:vi.fn(),pay:vi.fn(),execute:vi.fn(),retry:vi.fn(),reserve:vi.fn()}));
+vi.mock('../src/server/orchestration',()=>({startNegotiation:mocked.start}));
+vi.mock('../src/server/payments',()=>({payOrder:mocked.pay,paymentChallenge:vi.fn(),reconcilePayment:vi.fn()}));
+vi.mock('../src/server/service-payments',async(original)=>({...await original<typeof import('../src/server/service-payments')>(),reserveServicePurchase:mocked.reserve,executeServicePurchase:mocked.execute,retryServicePurchase:mocked.retry}));
+import {POST} from '../src/app/api/[...path]/route';
+import {newSession,passwordHash,resolveApplicationOrigin} from '../src/server/auth';
+import {db} from '../src/server/store';
+let cookie:string;
+beforeAll(()=>{process.env.PERENNA_DB_PATH=':memory:';db().prepare('INSERT INTO users VALUES(?,?,?,?,?)').run('origin-user','origin@example.test',passwordHash('long-test-password'),'Origin user','origin-business');cookie='perenna_session='+newSession('origin-user');mocked.start.mockImplementation(async(_tenant,_id,context)=>{if(context.origin!=='http://127.0.0.1:3000')throw Error('Signed service base does not match.');return {status:'queued'};});mocked.reserve.mockReturnValue({id:'purchase-fixture'});mocked.execute.mockResolvedValue({status:'fixture'});mocked.retry.mockResolvedValue({status:'fixture'});mocked.pay.mockResolvedValue({status:'fixture'});});
+function request(path:string,origin='http://127.0.0.1:3000',body={}){return new Request('http://localhost:3000/api/'+path,{method:'POST',headers:{Origin:origin,Cookie:cookie,'Content-Type':'application/json'},body:JSON.stringify(body)});}
+describe('validated application origin binding',()=>{
+ it('returns the validated equivalent loopback browser origin and retains URL origin when absent',()=>{expect(resolveApplicationOrigin(request('anything'))).toBe('http://127.0.0.1:3000');expect(resolveApplicationOrigin(new Request('http://localhost:3000/api'))).toBe('http://localhost:3000');});
+ it.each(['http://127.0.0.1:3001','https://127.0.0.1:3000','https://external.example','http://localhost.evil:3000','http://user@localhost:3000','http://localhost:3000/path'])('rejects untrusted, differentport/protocol or malformed origin %s',async(origin)=>{expect(()=>resolveApplicationOrigin(request('anything',origin))).toThrow();expect((await POST(request('intents/test/negotiate',origin))).status).toBe(403);});
+ it('passes the validated signed loopback base into negotiation and protected service HTTP contexts',async()=>{expect((await POST(request('intents/test/negotiate'))).status).toBe(202);expect(mocked.start).toHaveBeenCalledWith('origin-business','test',{origin:'http://127.0.0.1:3000',cookie});expect((await POST(request('services/capacity','http://127.0.0.1:3000',{policyId:'policy-fixture'}))).status).toBe(200);expect(mocked.execute).toHaveBeenCalledWith('origin-business','purchase-fixture',{origin:'http://127.0.0.1:3000',cookie});});
+ it('keeps an explicit service retry bound to the same validated application origin',async()=>{expect((await POST(request('services/capacity/purchase-fixture/retry-payment'))).status).toBe(200);expect(mocked.retry).toHaveBeenCalledWith('origin-business','purchase-fixture',{origin:'http://127.0.0.1:3000',cookie});});
+ it('binds generated goods resource URLs to the same validated browser origin',async()=>{for(const suffix of ['pay','retry-payment']){expect((await POST(request('orders/order-fixture/'+suffix))).status).toBe(200);expect(mocked.pay.mock.calls.at(-1)?.[2]).toBe('http://127.0.0.1:3000/api/orders/order-fixture/resource');}});
+});
