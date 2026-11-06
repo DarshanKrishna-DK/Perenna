@@ -26,7 +26,7 @@ export async function providerFetch(provider: string, url: string, init: Request
 
 export function providerReadiness() {
   return [
-    { id: "0g", name: "0G Private Computer", configured: Boolean(process.env.ZERO_G_API_KEY && process.env.ZERO_G_MODEL), enabled: process.env.INFERENCE_ENABLED === "true", purpose: "Intent and negotiation reasoning" },
+    { id: "0g", name: "0G Private Computer (mainnet API)", configured: Boolean(process.env.ZERO_G_API_KEY && process.env.ZERO_G_MODEL), enabled: process.env.INFERENCE_ENABLED === "true", purpose: "Mainnet-billed inference for the current key; token cost and balance unverified" },
     { id: "arkiv", name: "Arkiv Rabdi", configured: Boolean(process.env.ARKIV_ACCESS_KEY && process.env.ARKIV_PRIVATE_KEY), enabled: process.env.ARKIV_WRITES_ENABLED === "true", purpose: "Expiring public intent and signed evidence" },
     { id: "hedera", name: "Hedera testnet", configured: Boolean(process.env.HEDERA_ACCOUNT_ID && process.env.HEDERA_PRIVATE_KEY && process.env.HEDERA_MERCHANT_ACCOUNT_ID), enabled: process.env.HEDERA_PAYMENTS_ENABLED === "true", purpose: "Confirmed testnet settlement" },
     { id: "sarvam", name: "Sarvam", configured: Boolean(process.env.SARVAM_API_KEY), enabled: process.env.SPEECH_ENABLED === "true", purpose: "English and Hindi speech" },
@@ -36,7 +36,7 @@ export function providerReadiness() {
 
 export function providerCapabilityReadiness(){
   const declarations=[
-    {id:"inference",provider:"0G",required:["ZERO_G_API_KEY","ZERO_G_MODEL","INFERENCE_MAX_CALLS"],flag:"INFERENCE_ENABLED"},
+    {id:"inference",provider:"0G mainnet inference API",required:["ZERO_G_API_KEY","ZERO_G_MODEL","INFERENCE_MAX_CALLS"],flag:"INFERENCE_ENABLED"},
     {id:"speech",provider:"Sarvam",required:["SARVAM_API_KEY","SPEECH_MAX_CALLS"],flag:"SPEECH_ENABLED"},
     {id:"arkiv_read",provider:"Arkiv",required:["ARKIV_ACCESS_KEY"],flag:null},
     {id:"arkiv_write",provider:"Arkiv",required:["ARKIV_ACCESS_KEY","ARKIV_PRIVATE_KEY","ARKIV_WRITER_ADDRESS","ARKIV_MAX_FEE_WEI","ARKIV_MAX_TOTAL_FEE_WEI"],flag:"ARKIV_WRITES_ENABLED"},

@@ -13,10 +13,12 @@ Only these actions currently need your input:
 
 No other action or renewed approval is currently pending within the recorded scope.
 
+**0G billing correction:** the user confirmed that the configured API key is a mainnet inference key. Its calls consume mainnet credits/tokens. Exact mainnet token consumption and remaining balance are unknown and have not been verified. All 20 historically authorized calls are consumed, so no further 0G call is authorized. The separate 10 testnet 0G tokens are not an inference-credit balance or an additional allowance. Hedera chain 296 and Arkiv chain 7794095 remain testnet blockchain transactions; they do not determine 0G API billing.
+
 | Step | Your action | What I can handle |
 | --- | --- | --- |
 | 1. Keep browser available | Keep the existing Chrome profile available for account setup. | Desktop Commander remote was repaired using an isolated npm cache. BrowserAct verified access to the existing signed-in Hedera portal. The native Codex browser bridge remains unavailable. |
-| 2. Prepare 0G | All 20 authorized attempts are consumed; failed attempts count. No further 0G calls are authorized. | The seven-call live negotiation and a real private Mango revision succeeded. The final private reply used the new 512-token ceiling. No further inference call is permitted without a new allowance. |
+| 2. Prepare 0G | All 20 authorized mainnet API attempts are consumed; failed attempts count. No further 0G calls are authorized. The separate 10 testnet 0G tokens add no inference allowance. | Live negotiation, English/Hindi parsing and a private Mango revision used the mainnet-billed key. The final private reply used the 512-token ceiling. Exact mainnet token cost and remaining balance are unverified. |
 | 3. Fund Arkiv writer | Faucet receipt of 10 tGLM is confirmed. Up to five writes are approved, at most 0.002 tGLM each and 0.01 tGLM total; two writes are used. | Both actual writes were confirmed and read back. Current request version 2 under policy 3 passes live discovery. The dedicated writer remains `0x9253705482a44e6A7378163e57cc791AE6213ed5`; its key stays in `.env.local`. |
 | 4. Prepare Hedera | The user approved creation fees up to 1.1 HBAR per role within the shared 10 HBAR ceiling, with initial role funding of 0.1, 0.2 and 0.5 HBAR. Rotation remains deferred. | Funded roles are verified: operating/executor `0.0.11332965`, SPA supplier `0.0.11332983`, fee/top-up `0.0.11332984`. Original native merchant `0.0.9823983` is preserved. The conservative setup commitment is 4.5233928 HBAR, including the deployment reserve and earlier failed fee. |
 | 5. Confirm provider budgets | Already authorized: Sarvam up to 100 credits, Groq within its available daily allowance, and 20 bounded 0G calls in total. | Four real Sarvam calls passed English and Hindi synthesis-to-transcription checks. Human microphone and listening acceptance remain pending. Groq inference has not run at this checkpoint. |
@@ -45,10 +47,10 @@ The following entries describe the preparation checkpoint, not current completio
 
 - Hedera Docs and Arkiv General MCPs work as native tools in this conversation. The official Arkiv Mumbai MCP was also verified and registered.
 - Seven project skills are installed and discoverable, including the Hedera submission validator. Its current evidence score is [32/100](06_Hedera_Feasibility_Review.md), not an official judge score.
-- Groq and Sarvam model-list authentication succeeded. No inference credits were used, and speech quality and account balances are still unverified.
+- At the historical preparation checkpoint, Groq and Sarvam model-list authentication succeeded. That limited check does not describe the later mainnet-billed 0G inference calls recorded above.
 - The x402 facilitator advertises Hedera testnet support. No payment, signature, contract deployment or product integration has run.
 
-The three selected partners remain Arkiv, Hedera and 0G. Additional MCPs are optional; they do not replace runtime accounts or SDK integration. No new repository, hosted deployment, paid plan, token purchase or mainnet action is needed for this preparation.
+The three selected partners remain Arkiv, Hedera and 0G. Additional MCPs are optional; they do not replace runtime accounts or SDK integration. No new paid plan or token purchase is required by this guide. Actual 0G inference used the mainnet-billed API key, as corrected above; its exact monetary/token usage remains unknown.
 
 ## Original detailed setup reference
 
@@ -64,7 +66,7 @@ Prepare the accounts, test funds, API access and development connections needed 
 
 1  Secure the accounts. Use separate development credentials and testnet wallets. Keep all secrets out of chat, screenshots and the repository.
 
-2  Prepare the three core integrations. Hedera testnet for x402 payments, Arkiv Rabdi for application data, and 0G Private Computer for the main AI flow.
+2  Prepare the three core integrations. Hedera testnet for x402 payments, Arkiv Rabdi testnet for public application data, and the user-confirmed mainnet 0G inference API for the main AI flow. Their budgets and balances are separate.
 
 3  Prepare the voice and fallback services. Sarvam provides English and Hindi speech. Groq is an explicitly labelled fallback, not evidence of a successful 0G integration.
 
@@ -152,7 +154,7 @@ Use an allowlisted merchant, explicit testnet network, exact asset and integer a
 
 \[  \] Facilitator currently advertises Hedera testnet.
 
-\[  \] No mainnet funds or unrestricted spending approvals are involved.
+\[  \] Hedera settlement uses testnet HBAR within its own limits. Mainnet 0G API billing has a separate exhausted call authorization.
 
 ### Official resources
 
@@ -214,7 +216,7 @@ Treat blockchain data and metadata as public unless the exact architecture prove
 
 ### The distinction that matters
 
-0G testnet gas only pays for testnet chain transactions. Compute credit pays for inference. A wallet with faucet tokens is not proof of funded inference. Perenna does not need a new 0G chain deployment merely to call Private Computer through the Router.
+0G testnet gas pays for testnet chain transactions. The configured inference API uses mainnet-backed credits/tokens, as confirmed by the user. Its exact consumption and balance remain unverified. The separate 10 testnet 0G tokens neither fund nor authorize another inference call. Perenna does not need a new 0G chain deployment merely to call Private Computer through the Router.
 
 ### Main flow and fallback
 
@@ -392,6 +394,6 @@ In addition to Private Computer credits and inference request IDs, verify whethe
 
 ### Manual readiness checklist additions
 
-\[ \] Buyer and supplier testnet identities and agreement-signing path prepared. \[ \] SPA contract deploy/verify compatibility checked. \[ \] Agent operating wallet and Hedera x402 service endpoint verified. \[ \] 0G Private Computer request ID captured. \[ \] 0G Compute funding compatibility independently verified or explicitly blocked. \[ \] Arkiv real write/query evidence planned. \[ \] All spending and transactions remain within separately authorized testnet limits.
+\[ \] Buyer and supplier testnet identities and agreement-signing path prepared. \[ \] SPA contract deploy/verify compatibility checked. \[ \] Agent operating wallet and Hedera x402 service endpoint verified. \[ \] 0G Private Computer request ID captured. \[ \] 0G Compute funding compatibility independently verified or explicitly blocked. \[ \] Arkiv real write/query evidence planned. \[ \] Hedera and Arkiv blockchain transactions remain within their authorized testnet limits. Mainnet 0G API usage requires its independent call and credit authority.
 
 <!-- Source footer text: Perenna setup guide  |   (Word page field omitted in Markdown.) -->

@@ -22,6 +22,8 @@ With the local server running, run `npx playwright test -c tests/browser/playwri
 
 See `.env.example` for configuration names. Keys stay server-side. Execution flags default to disabled. Actual inference, speech, publication, signing and settlement require their explicit budgets and identities. An unavailable provider pauses its dependent action; it must never generate a fabricated payment receipt or live transcript.
 
+The user confirmed that the configured 0G inference API key uses **mainnet credits/tokens**. The recorded inference calls consumed that funded allowance. Exact mainnet token consumption and remaining balance are unknown and have not been verified. The historical 20-call authorization is exhausted; no further 0G call is authorized. The configured output ceiling is 512 tokens. The separate 10 testnet 0G tokens are not an inference budget and do not extend that authorization. Hedera chain 296 and Arkiv Rabdi chain 7794095 transactions use their respective testnets; 0G API inference billing is separate.
+
 Goods, operating-service and supplier-fee signing identities have separate configuration. A quote freezes its indicative INR terms and explicit testnet denomination. The denomination is a demo conversion, not an exchange rate. A confirmed goods payment does not establish platform fee revenue. Fee collection requires a separate supplier authorization and matching settlement receipt.
 
 For a raw native Hedera private key, configure its role-specific key type as `ecdsa` or `ed25519`. DER-encoded keys carry their own type. The adapter rejects an ambiguous raw key rather than assuming a curve. EVM wallet transactions require ECDSA-capable accounts.
@@ -46,7 +48,7 @@ The source is MIT licensed. Perenna was developed with AI assistance, including 
 
 1. Create a business workspace, review its profile and switch between English and Hindi. Save a corrected coffee-bean request with quantity, deadline, location and budget.
 2. Review the minimal public projection. With an authorized funded Arkiv writer, publish and confirm the request, then use live discovery. Local sample discovery is a separate development mode.
-3. Start negotiation with the worker running. Observe actual agent turns, excluded suppliers and three structured offers. Compare the final delivery and landed-price terms rather than treating free-form messages as commitments.
+3. Review the retained agent turns, excluded suppliers and structured offers. Request a new model negotiation only after a fresh explicit mainnet inference allowance; the existing 20-call authorization is exhausted. Compare structured delivery and landed-price terms.
 4. Approve one exact quote. With authorized testnet identities configured, obtain the x402 challenge, settle once and inspect the matching receipt. An unknown result must be reconciled before another attempt.
 5. Record explicitly simulated physical events, then sign and counterparty-acknowledge the resulting evidence. Publish the safe projection and show its effect on later screening.
 6. Review and bilaterally activate a funded standing agreement. Opt into its fixed schedule before signing. Show one permitted repeat order without new approval, a blocked changed-price request and an immediate dispute stop. Review onchain pause or revocation separately.
