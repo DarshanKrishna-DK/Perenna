@@ -10,7 +10,7 @@
 - [x] Stop the isolated production verification server; retain the existing preview at http://127.0.0.1:3000.
 - [x] Push the recovery and discovery checkpoint as 7ccdace with 204 automated tests, 32 browser checks and an isolated production build.
 - [x] Review and verify the expanded implementation while preserving the other session's design edits.
-- [ ] Push the latest verified feature checkpoint and updated demo instructions to GitHub.
+- [x] Push verified feature checkpoint d8c328f and the demo instructions to GitHub feat/mvp.
 - [x] Convert the supplied DOCX specifications to Markdown and remove the converted originals.
 - [x] Implement persistent authenticated business workspaces with tenant isolation and realtime recovery.
 - [x] Verify English and Hindi parsing, public negotiation and private offer revisions with real 0G request IDs.

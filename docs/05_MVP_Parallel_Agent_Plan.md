@@ -2,7 +2,7 @@
 
 Updated on 6 November 2026. The original backend/provider implementation has a verified live vertical slice. The user's newer visual instruction supersedes the earlier interface: pitch black, neon green, supplied robot logo and a complete Three.js spatial rebuild across every page.
 
-The expanded implementation now includes supplier participation, room memberships, editable catalogue and ranking controls, full standing terms, separate order acknowledgment, reviewed publication and voice cleanup. Its combined backend checkpoint passed 305 tests and its production browser checkpoint passed 82 desktop/mobile cases. The root TODO.md is authoritative for source publication and remaining live provider gates. Earlier live receipts remain historical evidence rather than proof of a fresh current execution.
+The expanded implementation now includes supplier participation, room memberships, editable catalogue and ranking controls, full standing terms, separate order acknowledgment, reviewed publication and voice cleanup. Its combined backend checkpoint passed 305 tests and its production browser checkpoint passed 82 desktop/mobile cases. Verified feature checkpoint d8c328f is published to feat/mvp. The root TODO.md is authoritative for remaining live provider gates. Earlier live receipts remain historical evidence rather than proof of a fresh current execution.
 
 ## Requirement audit for the demonstration
 

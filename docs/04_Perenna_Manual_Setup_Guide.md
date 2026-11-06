@@ -2,13 +2,12 @@
 
 ## What you still need to do
 
-Updated on 6 November 2026. The expanded implementation passed 305 automated tests, TypeScript, an isolated production build and an 82-case desktop/mobile browser checkpoint. It includes supplier participation, membership consent, complete standing terms, separate acknowledgment, ranking and voice cleanup. Session-expiry recovery passed both viewports; the latest source checkpoint and remaining provider gate are tracked in the root TODO.md. The saved frontend runs at http://127.0.0.1:3000; existing design edits are preserved.
+Updated on 6 November 2026. The expanded implementation passed 305 automated tests, TypeScript, an isolated production build and an 82-case desktop/mobile browser checkpoint. It includes supplier participation, membership consent, complete standing terms, separate acknowledgment, ranking and voice cleanup. Session-expiry recovery passed both viewports; feature checkpoint d8c328f is pushed to feat/mvp and the remaining provider gate is tracked in the root TODO.md. The saved frontend runs at http://127.0.0.1:3000; existing design edits are preserved.
 
 - Review the rebuilt interface at http://127.0.0.1:3000 and its retained live receipts.
 - Use auth.email and auth.password from the private local .data/live-mvp-client.json file to inspect the retained verification workspace.
 - Rotate the test keys after the working MVP is ready, as you requested. This is not a current build gate.
-- Two of the ten additional approved 0G attempts remain; the original and approved alternate native routes both returned HTTP 502. The original route exposed an upstream quote EOF; fresh inference needs a working provider route.
-- The approved standing-discovery listing is published and read back; no additional wallet action is needed for that record.
+- Two of the ten additional approved 0G attempts remain; the original and approved alternate native routes both returned HTTP 502. The original route exposed an upstream quote EOF; fresh inference needs a working provider route. If needed, share request reference 6011bb84279eca97 with 0G support. No purchase or top-up is requested.
 - English/Hindi microphone capture is owner-confirmed; optionally check personal speaker playback separately.
 
 No spending is required to review the retained demo. The published listing refers to a separate unsigned, unfunded proposal and does not accept or activate it. Its one-write allowance is consumed. Inference and financial execution flags remain paused in the private local configuration. Do not reset usage history. Existing paid-order and agreement receipts remain available even while external execution is paused.
