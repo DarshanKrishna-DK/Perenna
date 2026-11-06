@@ -2,7 +2,7 @@
 
 Perenna: **Business moves smarter.**
 
-The four supplied Word documents were converted to Markdown and the originals were deleted after conversion checks. Read the complete master prompt, including its 6 November standing-agreement revision. The current preparation request does not authorize starting the application build.
+The four supplied Word documents were converted to Markdown and the originals were deleted after conversion checks. Read the complete master prompt, including its 6 November standing-agreement revision. The user subsequently authorized the local MVP build; execution remains bounded by the recorded provider and wallet allowances.
 
 | Document | Purpose |
 | --- | --- |
@@ -17,4 +17,4 @@ The four supplied Word documents were converted to Markdown and the originals we
 | [Source register](sources.md) | Official sources accessed during this preparation |
 | [Prize evidence status](prize-evidence.md) | Actual current evidence and missing product requirements |
 
-Current state: the local MVP, all eight Three.js pages and bounded live integrations are verified. The final build, 162 automated tests and 28 browser checks passed. See the root TODO.md, the single manual guide and prize-evidence.md for status and exhausted execution allowances.
+Current state: the local MVP, all eight Three.js pages and bounded live integrations are verified. The expanded checkpoint passed a production build, 305 automated tests and 82 desktop/mobile browser checks. Fresh inference remains blocked by the latest 0G provider errors. See the root TODO.md, the single manual guide and prize-evidence.md for status and the exact remaining or consumed execution allowances.

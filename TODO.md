@@ -1,5 +1,11 @@
 # Perenna MVP to-do
 
+- [x] Pass fresh type generation, TypeScript, production build, 38 documentation links, eight badge images and credential scans after cleanup.
+
+- [x] Remove 1.77 GB of obsolete builds, caches and duplicate captures while preserving private state, live receipts and the latest browser evidence.
+- [x] Remove duplicate artwork and unused font output; keep generated declarations and machine-specific MCP reports out of Git.
+- [x] Rebuild the README with the canonical logo, technology badges, diagrams and public setup instructions.
+
 - [x] Check unused project processes: no Perenna build, test or server processes and no port 3000/3001 listeners remain; leave other projects and shared MCPs untouched.
 - [x] Document folder/account handoff in the manual guide; a new Codex account needs a new goal and preserved private state.
 

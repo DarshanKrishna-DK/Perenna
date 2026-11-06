@@ -10,3 +10,31 @@ artifacts/
 .agents/
 .codex/
 .aws/
+
+# Next.js generates these during development, build or type generation.
+/next-env.d.ts
+/out/
+/.turbo/
+
+# Keep machine-specific tooling responses local; retain their license notice.
+/docs/tooling/*.json
+
+# Test output and local diagnostics are separate from committed source tests.
+/test-results/
+/playwright-report/
+/blob-report/
+/.playwright/
+*.log
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+*.db
+*.db-wal
+*.db-shm
+
+# Local editor and operating-system state.
+/.idea/
+/.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini

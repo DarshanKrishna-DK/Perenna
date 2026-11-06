@@ -4,6 +4,8 @@ Tooling observations below were checked on 6 November 2026 and remain checkpoint
 
 Desktop Commander remote was repaired using a fresh isolated npm cache. Its device came online and the local stdio handshake exposed 25 tools. The Codex remote connector still had a routing error. BrowserAct direct Chrome access verified the existing signed-in Hedera portal without a guest profile. The native computer-use/browser bridge remained unavailable. These observations establish access at that checkpoint, not permanent connectivity.
 
+Machine-specific JSON probe reports and installed-file manifests are retained locally and excluded from Git. Their paths below describe the private checkout, not downloadable repository assets. Upstream sources and the license notice remain public.
+
 ## MCP connections
 
 | Connection | Installed scope | Verification | Practical limit |
@@ -18,7 +20,7 @@ Follow-up verification: native Hedera Docs and Arkiv General tool handles are no
 
 The Hedera server advertises a documentation feedback tool in addition to read tools. The Arkiv server similarly exposes feedback/reporting operations. No feedback or external reporting was invoked. Adding a connection grants no permission to send project contents, secrets, or optional feedback.
 
-Evidence: [Hedera query check](tooling/hedera-docs-mcp-check.json), [Arkiv status check](tooling/arkiv-mcp-check.json), and [x402 capability response](tooling/x402-supported.json). The first Hedera query encountered a Windows console Unicode encoding error while printing the response. A repeat with safe encoding succeeded and produced the retained record. Neither attempt signed or settled anything.
+Evidence: local `docs/tooling/hedera-docs-mcp-check.json`, local `docs/tooling/arkiv-mcp-check.json`, and local `docs/tooling/x402-supported.json`. The first Hedera query encountered a Windows console Unicode encoding error while printing the response. A repeat with safe encoding succeeded and produced the retained record. Neither attempt signed or settled anything.
 
 ## Installed project skills
 
@@ -26,13 +28,13 @@ Installed with the Codex skill-installer helper into `D:\Perenna\.agents\skills`
 
 | Skill | Purpose |
 | --- | --- |
-| [hackathon-prd](../.agents/skills/hackathon-prd/SKILL.md) | Product, problem, blockchain necessity, track alignment and validation checklist |
-| [validate-submission](../.agents/skills/validate-submission/SKILL.md) | Evidence-based readiness review; actual Mumbai rules override its generic rubric |
-| [x402-payments](../.agents/skills/x402-payments/SKILL.md) | Request/challenge/signature/verification/settlement constraints |
-| [agent-kit-policy](../.agents/skills/agent-kit-policy/SKILL.md) | Agent tool blocking rules and their bypass boundaries |
-| [hts-system-contract](../.agents/skills/hts-system-contract/SKILL.md) | Conditional HTS contract/asset compatibility guidance for SPA design |
-| [arkiv](../.agents/skills/arkiv/SKILL.md) | Current SDK/Rabdi routing, capability limits and focused recipe selection |
-| [arkiv-mcp](../.agents/skills/arkiv-mcp/SKILL.md) | General/event profile separation, MCP protocol checks and evidence limits |
+| `.agents/skills/hackathon-prd/SKILL.md` (hackathon-prd) | Product, problem, blockchain necessity, track alignment and validation checklist |
+| `.agents/skills/validate-submission/SKILL.md` (validate-submission) | Evidence-based readiness review; actual Mumbai rules override its generic rubric |
+| `.agents/skills/x402-payments/SKILL.md` (x402-payments) | Request/challenge/signature/verification/settlement constraints |
+| `.agents/skills/agent-kit-policy/SKILL.md` (agent-kit-policy) | Agent tool blocking rules and their bypass boundaries |
+| `.agents/skills/hts-system-contract/SKILL.md` (hts-system-contract) | Conditional HTS contract/asset compatibility guidance for SPA design |
+| `.agents/skills/arkiv/SKILL.md` (arkiv) | Current SDK/Rabdi routing, capability limits and focused recipe selection |
+| `.agents/skills/arkiv-mcp/SKILL.md` (arkiv-mcp) | General/event profile separation, MCP protocol checks and evidence limits |
 
 Hedera source: [hedera-dev/hedera-skills](https://github.com/hedera-dev/hedera-skills/tree/8b1fccd8ccbbe73e928037b76028caf79900b12e), commit `8b1fccd8ccbbe73e928037b76028caf79900b12e`. Its [Apache license](tooling/hedera-skills-LICENSE.txt) is retained.
 
@@ -40,7 +42,7 @@ Arkiv source: [Arkiv-Network/skills](https://github.com/Arkiv-Network/skills/tre
 
 Arkiv's previously advertised `arkiv-best-practices` entry is a deprecated redirect. The current router and MCP skill were installed instead. Focused implementation recipes such as `arkiv-first-write`, `arkiv-query`, and `arkiv-write-safety` are separate resources; the router alone is not their content. The Arkiv runtime SDK is installed and used by the publication and discovery adapters.
 
-The installed skills are now available for discovery. The relevant Hedera instructions were explicitly read and applied, including the [numeric scorecard](06_Hedera_Feasibility_Review.md). The [file manifest](tooling/installed-skills.json) records source pins and file hashes.
+The installed skills are now available for discovery. The relevant Hedera instructions were explicitly read and applied, including the [numeric scorecard](06_Hedera_Feasibility_Review.md). The local file manifest `docs/tooling/installed-skills.json` records source pins and file hashes.
 
 ## Additional official guidance checked
 
