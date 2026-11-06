@@ -1,6 +1,6 @@
 # Perenna review using the Hedera validator skill
 
-Reviewed on 6 November 2026. The bounded live integration flow is verified. The user's newer black, neon-green Three.js interface is being rebuilt; its final visual acceptance is pending.
+Reviewed on 6 November 2026. The bounded live integration flow and all eight black, neon-green Three.js pages are verified. Desktop/mobile WebGL, accessibility and realtime browser evidence are recorded. Owner feedback remains distinct from technical acceptance.
 
 ## Assessment
 
@@ -25,7 +25,7 @@ Calculation: sum of each score divided by five, multiplied by its percentage wei
 - Hedera testnet has a deployed runtime-verified registry, separate funded roles and a signed-review operating top-up. Automatic protected capacity settled 1,000 tinybars under prior policy. Goods settled 113,950 tinybars under exact quote approval. A separately approved 950-tinybar supplier fee was collected.
 - Bilateral standing authority produced two scheduled purchases of 14,222 tinybars without new per-order approval. A simulated dispute stopped execution. On-chain pause, revocation and withdrawal succeeded; remaining contract funding is zero.
 - Five Arkiv writes are confirmed: two request versions, two bilateral signed simulated-outcome commitments and a future request. A fresh query changed Monsoon from 78/ineligible to 80/eligible and Mango from 91/eligible to 79/ineligible at threshold 80.
-- The pre-redesign checkpoint passed 161 automated tests and a production build, with earlier 28-scenario browser coverage. Additional accounting regression coverage passes. Final visual checks apply separately to the new interface.
+- The final source passed 162 automated tests and a production build. All 28 browser checks passed on the redesigned interface, with actual WebGL on eight desktop/mobile routes and focused final readability checks.
 
 Public receipt and schema evidence is consolidated in [prize-evidence.md](prize-evidence.md). Source checkpoints are on the [Perenna feature branch](https://github.com/DarshanKrishna-DK/Perenna/tree/feat/mvp). There is no public application deployment or event submission.
 

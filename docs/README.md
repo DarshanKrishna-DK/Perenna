@@ -17,4 +17,4 @@ The four supplied Word documents were converted to Markdown and the originals we
 | [Source register](sources.md) | Official sources accessed during this preparation |
 | [Prize evidence status](prize-evidence.md) | Actual current evidence and missing product requirements |
 
-Current state: documentation and development tooling prepared. Application implementation, wallet operations, provider inference, contract deployment and product end-to-end verification have not started.
+Current state: the local MVP, all eight Three.js pages and bounded live integrations are verified. The final build, 162 automated tests and 28 browser checks passed. See the root TODO.md, the single manual guide and prize-evidence.md for status and exhausted execution allowances.

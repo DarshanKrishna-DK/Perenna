@@ -1,6 +1,6 @@
 # Perenna MCP and skill setup status
 
-Checked on 6 November 2026. Development aids below are installed or configured, and application implementation is underway. Seven live 0G negotiation calls succeeded after three failed parse attempts; four live Sarvam calls passed English/Hindi round trips. No blockchain transaction has been signed or submitted. Current integration evidence is tracked in [prize-evidence.md](prize-evidence.md).
+Tooling was checked on 6 November 2026. The local MVP now has verified live integrations, all eight Three.js pages, 162 passing automated tests and 28 passing browser checks. All 20 mainnet-billed 0G attempts and five authorized Arkiv writes are consumed; further execution is paused. Current integration evidence is tracked in [prize-evidence.md](prize-evidence.md).
 
 Desktop Commander remote was repaired using a fresh isolated npm cache. Its device came online and the local stdio handshake exposed 25 tools. The Codex remote connector still had a routing error. BrowserAct direct Chrome access verified the existing signed-in Hedera portal without a guest profile. The native computer-use/browser bridge remained unavailable. These observations establish access at that checkpoint, not permanent connectivity.
 
@@ -66,7 +66,9 @@ The official [Hedera MCP page](https://hedera.com/mcp-servers/) distinguishes Do
 
 The General `start` workflow now identifies the active Mumbai event URL. That separately scoped official connection was verified and added for the requested event review. Its `server_status` identifies `mumbai`, campaign `mumbai-2026`, and organizer snapshots checked on 3 November 2026. Reopen current official prize pages before relying on that snapshot. Its availability through 10 November is the MCP operator schedule, not the submission deadline. The ended Devfolio profile remains unused.
 
-## Runtime readiness remains unverified
+## Historical preparation readiness
+
+The following preparation snapshot predates the completed live checks. Current outcomes and limits are recorded in prize-evidence.md and the manual guide.
 
 | Boundary | Required evidence when building | Current status |
 | --- | --- | --- |

@@ -15,7 +15,7 @@ Updated on 6 November 2026. The original backend/provider implementation has a v
 - Actual Hedera testnet service, goods and separate supplier-fee settlement, signed-review funding, bilateral SPA activation, two autonomous purchases, dispute stop, pause, revocation and withdrawal are verified.
 - Five Arkiv writes and readback are verified. A later query changed both positive and adverse supplier eligibility under the same future policy. No further write is authorized.
 - The conservative combined Hedera upper bound is 6.19513096 HBAR, below 10. Unknown EVM fee attribution retains maxima; no submitted transaction outcome remains unresolved.
-- Earlier source passed 161 tests and a production build; the new rejected-reservation regression also passes. Final tests, 3D screenshots, accessibility, responsive and realtime checks must be rerun for the redesigned interface.
+- Final source passed 162 automated tests and a production build. All 28 browser checks passed, including accessibility and realtime recovery. All eight desktop/mobile routes rendered one actual WebGL scene without horizontal overflow; focused final readability checks also passed.
 - Public source checkpoints d7e243e and 611e56c are pushed to feat/mvp. Push each verified major feature milestone or after one to two hours of active development, with one short understandable commit subject.
 - New paid inference, public writes and Hedera execution are paused after the bounded verification. Retained receipts remain available.
 - Self-financing earned fees into 0G compute and external customer demand remain unproved. Neither is inferred from synthetic records or testnet revenue.

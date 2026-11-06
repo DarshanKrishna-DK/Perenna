@@ -2,9 +2,9 @@
 
 ## What you still need to do
 
-Updated on 6 November 2026. The backend and bounded live integration flow are verified. The user-requested black, neon-green Three.js rebuild is in progress across all eight pages; its final visual and browser checks are pending. The local application runs at http://127.0.0.1:3000.
+Updated on 6 November 2026. The backend, bounded live integrations and all eight rebuilt Three.js pages are verified. The final build passed 162 automated tests and 28 browser checks, plus focused final readability checks. The local application runs at http://127.0.0.1:3000.
 
-- Review the rebuilt interface and retained live receipts when the new preview is ready.
+- Review the rebuilt interface at http://127.0.0.1:3000 and its retained live receipts.
 - Rotate the test keys after the working MVP is ready, as you requested. This is not a current build gate.
 - To rerun paid inference or publish more records, provide a new explicit bounded allowance first. The existing inference and Arkiv allowances are exhausted. No further spending is required to review the retained demo.
 

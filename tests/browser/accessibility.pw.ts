@@ -1,5 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
-import {test, expect} from '@playwright/test';
+import {test, expect} from './fixtures';
 
 test('public screens meet automated WCAG AA checks', async ({page}) => {
   for (const route of ['/', '/onboarding']) {

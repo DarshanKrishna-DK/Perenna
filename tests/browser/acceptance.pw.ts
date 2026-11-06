@@ -1,5 +1,6 @@
-import {test, expect, type Page} from '@playwright/test';
-import {mkdir} from 'node:fs/promises';
+import {type Page} from '@playwright/test';
+import {test, expect} from './fixtures';
+import {mkdir,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 
 async function register(page: Page) {
@@ -24,16 +25,33 @@ async function createIntent(page: Page) {
   await expect(page.getByRole('status').filter({hasText:'Request saved'})).toBeVisible();
 }
 
+async function captureSpatialPage(page:Page,route:string,project:string){
+ const anchor=page.locator('.hero-stage').first();
+ if(await anchor.isVisible())await anchor.scrollIntoViewIfNeeded();
+ await expect(page.locator('.spatial-stage')).toHaveAttribute('data-scene-state',/ready|fallback/);
+ await page.evaluate(()=>document.fonts.ready);
+ // Allow the compositor to settle after scrolling the actual mobile scene anchor into view.
+ await page.waitForTimeout(250);
+ await page.screenshot({path:resolve('artifacts/browser',route+'-'+project+'-scene-viewport.png')});
+ const scene=await page.evaluate(()=>({route:location.pathname,sceneState:document.querySelector('.spatial-stage')?.getAttribute('data-scene-state'),sceneMode:document.querySelector('.spatial-stage')?.getAttribute('data-scene-mode'),appScene:document.querySelector('.app')?.getAttribute('data-scene-ready'),canvasCount:document.querySelectorAll('.spatial-stage canvas').length,background:getComputedStyle(document.body).backgroundColor,rootOverflow:document.documentElement.scrollWidth>innerWidth,logo:!!document.querySelector('.brand-image[src="/brand/perenna-logo.png"]')}));
+ await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
+ await page.waitForTimeout(250);
+ await page.screenshot({path:resolve('artifacts/browser',route+'-'+project+'.png'),fullPage:true});
+ await page.screenshot({path:resolve('artifacts/browser',route+'-'+project+'-viewport.png')});
+ return scene;
+}
+
 test('all public and authenticated pages render without overflow or client errors', async ({page}, info) => {
   const errors: string[]=[];
   page.on('pageerror', error=>errors.push(error.message));
+  const scenes:unknown[]=[];
   const artifactDir=resolve('artifacts/browser');
   await mkdir(artifactDir,{recursive:true});
   for (const route of ['', 'onboarding']) {
     await page.goto('/'+route,{waitUntil:'domcontentloaded'});
     await expect(page.locator('h1').first()).toBeVisible();
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-    await page.screenshot({path:resolve(artifactDir,`${route||'landing'}-${info.project.name}.png`),fullPage:true});
+    scenes.push(await captureSpatialPage(page,route||'landing',info.project.name));
   }
   const email=await register(page);
   await createIntent(page);
@@ -44,8 +62,9 @@ test('all public and authenticated pages render without overflow or client error
     await expect(page.locator('.page-heading')).toBeVisible();
     if(route==='settings')await expect(page.locator('.provider-row')).toHaveCount(5);
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),route).toBe(true);
-    await page.screenshot({path:resolve(artifactDir,`${route}-${info.project.name}.png`),fullPage:true});
+    scenes.push(await captureSpatialPage(page,route,info.project.name));
   }
+  await writeFile(resolve(artifactDir,'scene-states-'+info.project.name+'.json'),JSON.stringify(scenes,null,2));
   await page.getByLabel('Business display name',{exact:true}).fill('Canopy Bakery');
   await page.getByLabel('Business category',{exact:true}).fill('Cafe and bakery');
   await page.getByRole('button',{name:'Save business preferences',exact:true}).click();
@@ -246,7 +265,7 @@ test('private intent details and independent budget boundaries persist',async({p
  const value=await (await page.request.get('/api/workspace')).json();
  expect(value.intents[0].deliveryAddress).toBe('Synthetic private address, unit 99');
  expect(value.intents[0].specification).toContain('sealed');
- expect(value.intents[0].hardCriteria).toEqual(['No substitutions']);
+ expect(value.intents[0].hardCriteria).toEqual(['no_substitution']);
  await page.getByRole('button',{name:'Revise selected request',exact:true}).click();
  await page.getByText('Specifications, delivery and offer rules',{exact:true}).click();
  await expect(page.getByRole('textbox',{name:'Exact delivery address, private',exact:true})).toHaveValue('Synthetic private address, unit 99');

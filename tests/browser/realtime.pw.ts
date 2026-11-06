@@ -1,4 +1,4 @@
-import {test, expect} from '@playwright/test';
+import {test, expect,guardProviderBoundaries} from './fixtures';
 
 test('two authenticated sessions receive persisted messages and reject unrelated business access', async ({page, browser, baseURL}) => {
   const email = `realtime-${crypto.randomUUID()}@example.invalid`;
@@ -12,6 +12,8 @@ test('two authenticated sessions receive persisted messages and reject unrelated
   const other = await browser.newContext({baseURL, viewport:page.viewportSize()!});
   const unrelated = await browser.newContext({baseURL});
   try {
+    await guardProviderBoundaries(other,baseURL!);
+    await guardProviderBoundaries(unrelated,baseURL!);
     expect((await other.request.post('/api/auth', {headers, data:{action:'login', email, password}})).ok()).toBe(true);
     const observer = await other.newPage();
     await Promise.all([page.goto('/negotiations'), observer.goto('/negotiations')]);
