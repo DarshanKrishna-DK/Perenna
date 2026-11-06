@@ -13,7 +13,7 @@ test('public screens meet automated WCAG AA checks', async ({page}) => {
 test('authenticated screens meet automated WCAG AA checks', async ({page, baseURL}) => {
   const response = await page.request.post('/api/auth', {
     headers:{Origin:baseURL!},
-    data:{action:'register', email:`a11y-${crypto.randomUUID()}@example.invalid`, password:'Synthetic-accessibility-check-2026', name:'Accessibility check', businessName:'Perenna Accessibility'},
+    data:{action:'register', email:`a11y-${crypto.randomUUID()}@example.invalid`, password:'Synthetic-accessibility-check-2026', name:'Accessibility check', businessName:'Perenna Accessibility',serviceArea:'Mumbai',workspaceConsent:true},
   });
   expect(response.ok()).toBe(true);
   for (const route of ['/workspace', '/negotiations', '/suppliers', '/orders', '/agreements', '/settings']) {

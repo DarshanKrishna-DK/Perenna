@@ -1,3 +1,4 @@
+import {committedSupplierStock} from './catalogue';
 import { networkCharges } from '../providers/funds';
 import { reserveAuthority, settleAuthority, releaseAuthority } from './budgets';
 import { randomUUID } from "node:crypto";
@@ -8,7 +9,7 @@ import { DomainError, digest } from "../domain/procurement";
 import { facilitatorCapabilities, preparePaidRequest, reconcileHederaTransaction, settleProtectedRequest, signedTransactionId, type PaymentPolicy } from "../providers/hedera";
 import { allInternal, event, get, list, put, transaction } from "./store";
 import { isProviderError } from "../providers/config";
-import { required, suppliers, assertIntentOpen, settings } from "./service";
+import { required, getSuppliers, assertIntentOpen, settings } from "./service";
 import { assertSharedAllowance } from "./exposure";
 
 const atomic = z.string().regex(/^[1-9]\d*$/).max(24);
@@ -59,7 +60,7 @@ export function reserveServicePurchase(tenant:string,policyId:string,input:unkno
   const pending=list("service_payment",tenant).filter(p=>p.policyId===policyId&&!['rejected','cancelled'].includes(p.status));
   if(pending.reduce((sum,p)=>sum+BigInt(p.amountAtomic),0n)+BigInt(request.amountAtomic)>BigInt(policy.totalCapAtomic))throw new DomainError("The signed cumulative service cap is exhausted.",409);
   assertSharedAllowance(request.amountAtomic);
-  const intent=assertIntentOpen(tenant,request.intentId);const supplier=suppliers.find(s=>s.id===request.supplierId);
+  const intent=assertIntentOpen(tenant,request.intentId);const supplier=getSuppliers().find(s=>s.id===request.supplierId);
   if(!supplier)throw new DomainError("The selected supplier is unknown.",404);
   const id=randomUUID();reserveAuthority(tenant,id+'-operating-authority','operating',request.amountAtomic,policy.sessionId||'local-session',settings(tenant));
   const purchase=put("service_payment",tenant,{...request,id,policyId,intentVersion:intent.version,policyHash:policy.policyHash,requestDigest:digest({...request,policyId}),resourceUrl:policy.resourceBaseUrl+id,status:"reserved",attempt:1,authorityReservationId:id+"-operating-authority",payer:policy.payer,asset:policy.asset,network:policy.network,payee:policy.merchant,input:{supplierId:supplier.id,intentId:intent.id,quantity:intent.quantity,location:intent.location,stock:supplier.stock,leadDays:supplier.leadDays,serviceArea:supplier.location},provenance:"sample_inventory_assessment"});
@@ -131,11 +132,11 @@ export async function reconcileServicePurchase(tenant:string,id:string){
  const charges=networkCharges(receipt.transactions||[]);if(!receipt.confirmed)throw new DomainError("Matching service settlement is not confirmed yet.",409);
  return transaction(()=>{
   const current=required("service_payment",tenant,id);if(current.status==="confirmed")return safePurchase(current);claimTransaction(tenant,id,current.transactionId);
-  const input=current.input;const supplier=suppliers.find(s=>s.id===input.supplierId);
+  const input=current.input;const supplier=getSuppliers().find(s=>s.id===input.supplierId);
   if(!supplier)throw new DomainError("The assessed supplier no longer exists.",409);
-  const orders=allInternal("order").filter(order=>order.supplierId===supplier.id&&order.status!=='cancelled');const pending=allInternal("agreement_execution").filter(execution=>execution.supplierId===supplier.id&&!execution.orderId&&['reserved','preparing','prepared','executing','submitted','unknown'].includes(execution.status));const reserved=[...orders,...pending].reduce((sum,reservation)=>{const quantity=Number(reservation.quantity);if(!Number.isSafeInteger(quantity)||quantity<0||!Number.isSafeInteger(sum+quantity))throw new DomainError('Stored inventory reservations are invalid.',409);return sum+quantity;},0);const availableQuantity=Math.max(0,supplier.stock-reserved);
-  const available=availableQuantity>=input.quantity;const servesArea=supplier.location.toLowerCase()===input.location.toLowerCase();
-  const assessment={supplierId:input.supplierId,intentId:input.intentId,availableQuantity,reservedQuantity:reserved,requestedQuantity:input.quantity,available,servesArea,leadDays:supplier.leadDays,eligible:available&&servesArea,provenance:"synthetic_inventory_after_global_reservations",assessedAt:new Date().toISOString(),note:"Assessment of disclosed sample inventory after current reservations. Physical supplier capacity is not verified."};
+  const reserved=committedSupplierStock(supplier.id);const availableQuantity=Math.max(0,supplier.stock-reserved);
+  const available=supplier.available!==false&&availableQuantity>=input.quantity&&input.quantity>=supplier.minimumOrderQuantity;const servesArea=supplier.location.toLowerCase()===input.location.toLowerCase();
+  const assessment={supplierId:input.supplierId,supplierVersion:supplier.catalogueVersion,catalogueAvailability:supplier.available,minimumOrderQuantity:supplier.minimumOrderQuantity,intentId:input.intentId,availableQuantity,reservedQuantity:reserved,requestedQuantity:input.quantity,available,servesArea,leadDays:supplier.leadDays,eligible:available&&servesArea,provenance:"synthetic_inventory_after_global_reservations",assessedAt:new Date().toISOString(),note:"Assessment of disclosed sample inventory after current reservations. Physical supplier capacity is not verified."};
   settleAuthority(tenant,current.authorityReservationId||id+"-operating-authority");const updated=put("service_payment",tenant,{...current,status:"confirmed",assessment,networkCharges:charges,confirmedAt:new Date().toISOString()});
   put("capacity_assessment",tenant,{...assessment,id:current.id+"-assessment",paymentId:current.id,transactionId:current.transactionId});
   put("ledger",tenant,{id:current.id+"-service-ledger",kind:"operating_service_payment",networkCharges:charges,amountAtomic:current.amountAtomic,asset:current.asset,network:current.network,transactionId:current.transactionId,status:"confirmed"});

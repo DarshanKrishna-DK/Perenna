@@ -3,7 +3,7 @@ import {digest, DomainError} from '../domain/procurement';
 import {isProviderError} from '../providers/config';
 import {negotiatePrivateOffer} from '../providers/private-inference';
 import {db, event, get, list, put, transaction} from './store';
-import {assertIntentOpen, buyerCredibility, recordQuoteRevision, required, screenedSuppliers, settings, usageControls} from './service';
+import {assertCommercialRequestOpen, assertIntentOpen, buyerCredibility, recordQuoteRevision, required, screenedSuppliers, settings, usageControls} from './service';
 
 const requestSchema=z.object({supplierId:z.string().min(1).max(120),requestId:z.string().min(8).max(100)}).strict();
 type Context={userId:string;sessionId?:string};
@@ -37,7 +37,7 @@ export async function requestPrivateAgentReply(tenant:string,intentId:string,inp
   }
   const roomId=intentId+'-'+request.supplierId;
   const prepared=transaction(()=>{
-    const intent=assertIntentOpen(tenant,intentId);
+    const intent=assertCommercialRequestOpen(tenant,intentId);
     const policy=settings(tenant);
     if(intent.status==='negotiating'||policy.inferenceReserved>=1)throw new DomainError('Another negotiation is using this business allowance.',409);
     if(list('order',tenant).some(order=>order.intentId===intentId&&order.status!=='cancelled'))throw new DomainError('Review or withdraw the existing order before requesting changed commercial terms.',409);

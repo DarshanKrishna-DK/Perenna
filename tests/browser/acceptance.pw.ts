@@ -12,6 +12,7 @@ async function register(page: Page) {
   const email=`browser-${crypto.randomUUID()}@example.invalid`;
   await page.getByLabel('Email', {exact:true}).fill(email);
   await page.getByLabel('Password', {exact:true}).fill('Synthetic-browser-pass-9281');
+  await page.locator('input[name="workspaceConsent"]').check();
   await page.getByRole('button', {name:'Create my workspace', exact:true}).click();
   await page.waitForURL('**/workspace', {waitUntil:'domcontentloaded'});
   await expect(page.getByRole('heading', {name:'Room to move.', exact:true})).toBeVisible();
@@ -82,6 +83,100 @@ test('agreement discovery requires reviewed public consent and exposes read-only
   await page.getByRole('button',{name:'Query current listings',exact:true}).click();
   await expect(page.getByRole('status').filter({hasText:'Current matching listings'})).toContainText('1');
   expect(calls.filter(call=>call.action==='publish-discovery')).toHaveLength(1);
+});
+
+test('request publication separates private details and requires exact reviewed consent', async ({page},info) => {
+  await register(page);
+  const origin=new URL(page.url()).origin;
+  const saved=await page.request.post('/api/intents',{headers:{Origin:origin},data:{item:'coffee beans',unit:'kg',quantity:20,budgetMinor:200000,deadline:new Date(Date.now()+7*86400000).toISOString(),location:'Mumbai',deliveryAddress:'Private loading entrance',contact:'private-review@example.invalid',specification:'Whole roasted beans'}});
+  expect(saved.status()).toBe(201);
+  const intent=await saved.json(),projectionDigest='c'.repeat(64),calls:Record<string,any>[]=[];
+  const projection={item:intent.item,quantity:intent.quantity,unit:intent.unit,area:'Mumbai',requestExpiresMs:Date.parse(intent.expiresAt),deliveryDeadlineMs:Date.parse(intent.deadline),deliveryTimezone:'Asia/Kolkata',requestVersion:intent.version,policyVersion:1,createdMs:Date.parse(intent.createdAt),businessCommitment:'0x'+'a'.repeat(64),requestCommitment:'0x'+'b'.repeat(64)};
+  await page.route(`**/api/intents/${intent.id}/*`,async route=>{
+    const path=new URL(route.request().url()).pathname,body=route.request().postDataJSON();calls.push({path,body});
+    if(path.endsWith('/publication-prepare'))return route.fulfill({json:{publicProjection:projection,projectionDigest,maximumFeeWei:'1000000000000000',privateReview:{...intent,procurementPerOrderCapMinor:2000000,procurementSessionCapMinor:2000000,procurementDailyCapMinor:2000000}}});
+    if(path.endsWith('/publish'))return route.fulfill({json:{...intent,publicationStatus:'confirmed',arkiv:{entityKey:'0x'+'e'.repeat(64)}}});
+    if(path.endsWith('/screening-refresh'))return route.fulfill({json:{intent:{...intent,publicationStatus:'confirmed'},suppliers:[{id:'sup-banyan',name:'Banyan Collective',credibility:86,eligible:true,reasons:[]},{id:'sup-estuary',name:'Estuary Traders',credibility:42,eligible:false,reasons:['Below your credibility threshold']}]}});
+    return route.fulfill({status:409,json:{error:'Only fixture publication and read-only screening are admitted.'}});
+  });
+  await page.reload({waitUntil:'domcontentloaded'});
+  const panel=page.locator('.intent-publication');
+  await panel.getByRole('button',{name:'Review request publication',exact:true}).click();
+  await expect(panel.getByRole('heading',{name:'Public on Arkiv',exact:true})).toBeVisible();
+  await expect(panel.getByText('Private loading entrance',{exact:true})).toBeVisible();
+  await expect(panel.getByText('private-review@example.invalid',{exact:true})).toBeVisible();
+  const publish=panel.getByRole('button',{name:'Publish reviewed request',exact:true});
+  await expect(publish).toBeDisabled();
+  await panel.getByRole('checkbox',{name:'Publish this exact public request and retain the listed private details.',exact:true}).check();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  await panel.screenshot({path:resolve('artifacts/browser',`intent-publication-review-${info.project.name}.png`)});
+  await publish.click();
+  expect(calls.find(call=>call.path.endsWith('/publish'))?.body).toEqual({expectedVersion:intent.version,confirmPublic:true,projectionDigest});
+  await expect(panel.getByRole('status')).toContainText('confirmed on Arkiv');
+  await panel.getByRole('button',{name:'Refresh supplier screening',exact:true}).click();
+  await expect(panel.getByRole('heading',{name:'Current supplier screening',exact:true})).toBeVisible();
+  await expect(panel.getByText('Below your credibility threshold',{exact:true})).toBeVisible();
+  await expect(panel.getByRole('status')).toContainText('No negotiation or payment was started');
+  expect(calls.filter(call=>call.path.endsWith('/publish'))).toHaveLength(1);
+});
+
+test('complete standing terms are reviewed and frozen from the actual form without funding', async ({page},info) => {
+  await register(page);
+  const business=(await(await page.request.get('/api/workspace')).json()).business;
+  await page.route('**/api/agreements',route=>{
+    const body=route.request().postDataJSON();
+    if(route.request().method()==='POST'&&body.autoExecute===false&&!body.action)return route.continue();
+    return route.fulfill({status:409,json:{error:'Only an unfunded local draft is permitted.'}});
+  });
+  await page.goto('/agreements',{waitUntil:'domcontentloaded'});
+  const form=page.locator('.agreement-form');
+  await form.locator('[name="supplierId"]').selectOption('sup-banyan');
+  for(const [name,value] of Object.entries({item:'Coffee beans',quantity:'50',perOrderCap:'2000',aggregateCap:'4000',expiresAt:new Date(Date.now()+7*86400000).toISOString().slice(0,10)}))await form.locator(`[name="${name}"]`).fill(value);
+  await form.locator('[name="onchain"]').check();
+  const values={unit:'kilograms',location:'Mumbai',maxUnitPrice:'21',perOrderCapAtomic:'200000',aggregateCapAtomic:'400000',buyerAddress:'0x1111111111111111111111111111111111111111',supplierAddress:'0x2222222222222222222222222222222222222222',executorAddress:'0x3333333333333333333333333333333333333333',payeeAddress:'0x2222222222222222222222222222222222222222',contractAddress:'0x4444444444444444444444444444444444444444',frequencySeconds:'60',reorderQuantity:'50',settlementTinybarPerMinor:'1',deliveryMinor:'15000',taxMinor:'0',maxGasWei:'100000000000000000',sku:'BEANS-50',specification:'Whole roasted coffee beans, sealed 1 kg packs',qualityRequirements:'Sealed packs without substitutions',deliveryGeography:'Mumbai',deliveryTimezone:'Asia/Kolkata',deliveryWindowStart:'09:00',deliveryWindowEnd:'17:00',deliveryWeekdays:'1,2,3,4,5',deliveryLeadDays:'2',baselineUnitPrice:'20.50',priceToleranceBps:'100'};
+  for(const [name,value] of Object.entries(values))await form.locator(`[name="${name}"]`).fill(value);
+  await form.locator('[name="acknowledgmentRule"]').selectOption('bilateral_receipt_before_next_order');
+  await expect(form.getByText('Frozen commercial and fulfillment rules',{exact:true})).toBeVisible();
+  await form.screenshot({path:resolve('artifacts/browser',`standing-commercial-form-${info.project.name}.png`)});
+  const responsePromise=page.waitForResponse(response=>new URL(response.url()).pathname==='/api/agreements'&&response.request().method()==='POST');
+  await form.getByRole('button',{name:'Save agreement proposal',exact:true}).click();
+  const response=await responsePromise;
+  expect(response.status()).toBe(201);
+  const record=await response.json();
+  expect(record.terms).toMatchObject({item:'coffee beans',unit:'kg',autoExecute:false,commercialTerms:{sku:'BEANS-50',specification:values.specification,qualityRequirements:values.qualityRequirements,baselineUnitPriceMinor:2050,priceToleranceBps:100,deliveryTimezone:'Asia/Kolkata',deliveryWindowStart:'09:00',deliveryWindowEnd:'17:00',deliveryWeekdays:[1,2,3,4,5],acknowledgmentRule:'bilateral_receipt_before_next_order',renewalRule:'new_bilateral_agreement_only'}});
+  expect(record.terms.businessIdentities).toMatchObject({buyer:{businessId:business.id,name:business.name,signerAddress:values.buyerAddress,provenance:'authenticated_business_profile',walletVerifiedAtDraft:false},supplier:{businessId:null,signerAddress:values.supplierAddress,provenance:'synthetic_fixture',fixtureId:'sup-banyan',walletVerifiedAtDraft:false},relationshipKind:'synthetic_catalogue_only',participantIds:[]});
+  expect(record.terms.receiptPolicy).toMatchObject({claimantRole:'buyer',claimantBusinessId:business.id,claimantAddress:values.buyerAddress,countersignerRole:'supplier',countersignerBusinessId:null,countersignerAddress:values.supplierAddress,buyerAuthorityId:null,supplierAuthorityId:null,buyerAuthorityPolicy:'current_active_business_authority_at_frozen_wallet',supplierAuthorityPolicy:'frozen_synthetic_supplier_wallet'});
+  expect(record.createTransactionHash).toBeUndefined();
+  expect(record.buyerSignature).toBeNull();
+  expect(record.status).toBe('awaiting_signatures');
+});
+
+test('payment stays separate from supplier response and intentional fulfillment controls', async ({page},info) => {
+  await register(page);
+  const workspace=await (await page.request.get('/api/workspace')).json();
+  const order:Record<string,any>={id:'outcome-ui-fixture',intentId:'outcome-request-fixture',supplierId:'sup-banyan',supplierName:'Banyan Collective',item:'Coffee beans',quantity:20,unit:'kg',status:'paid',paymentStatus:'confirmed',totalMinor:50000,goodsMinor:49000,feeMinor:1000,deliveryMinor:0,taxMinor:0,amountAtomic:'50000',network:'hedera:testnet',asset:'0.0.0',createdAt:new Date().toISOString(),transactionId:'fixture-confirmed-payment'};
+  let view:Record<string,any>={orderId:order.id,paymentStatus:'confirmed',supplierAcknowledgment:{status:'pending'},physicalState:'not_started',financialReconciliationRequired:false,hasSupplierParticipant:false,history:[]};
+  const stages:string[]=[];
+  await page.route('**/api/workspace',route=>route.fulfill({json:{...workspace,orders:[{...order,supplierAcknowledgment:view.supplierAcknowledgment,physicalState:view.physicalState,delayedFrom:view.delayedFrom}]}}));
+  await page.route(`**/api/orders/${order.id}/outcomes`,route=>route.fulfill({json:view}));
+  await page.route(`**/api/orders/${order.id}/simulate`,route=>{const {stage}=route.request().postDataJSON();stages.push(stage);if(stage==='accepted')view={...view,supplierAcknowledgment:{status:'accepted',provenance:'simulated_supplier_acceptance'}};else view={...view,delayedFrom:stage==='delayed'?view.physicalState:view.delayedFrom,physicalState:stage};view.history=[...view.history,{id:'ui-'+stages.length,createdAt:new Date().toISOString(),stage,provenance:'simulated_physical_event'}];return route.fulfill({json:view});});
+  await page.goto('/orders',{waitUntil:'domcontentloaded'});
+  await page.getByText('Physical event simulation',{exact:true}).click();
+  const panel=page.locator('.order-outcomes');
+  await expect(panel.getByText('Pending',{exact:true})).toBeVisible();
+  await expect(panel.getByRole('button',{name:'Simulate: Preparing',exact:true})).toHaveCount(0);
+  await panel.getByRole('button',{name:'Record sample supplier acceptance',exact:true}).click();
+  await expect(panel.getByText('Simulated sample acceptance, no signature',{exact:false})).toBeVisible();
+  for(const [stage,label] of [['preparing','Preparing'],['delayed','Delayed'],['preparing','Preparing'],['dispatched','Dispatched'],['delivered','Delivered']]){
+    await panel.getByRole('button',{name:'Simulate: '+label,exact:true}).click();
+    await expect(panel.locator('dd').last()).toHaveText(label);
+    expect(view.paymentStatus).toBe('confirmed');
+  }
+  expect(stages).toEqual(['accepted','preparing','delayed','preparing','dispatched','delivered']);
+  await expect(panel.getByRole('button',{name:'Simulate: Preparing',exact:true})).toHaveCount(0);
+  await panel.getByText('Outcome history',{exact:true}).click();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  await panel.screenshot({path:resolve('artifacts/browser',`order-outcomes-${info.project.name}.png`)});
 });
 
 test('all public and authenticated pages render without overflow or client errors', async ({page}, info) => {
@@ -245,10 +340,27 @@ test('chain control preparation is reviewable and wallet rejection never confirm
  await page.getByLabel('Maximum unit price, INR',{exact:true}).fill('100');
  await page.getByLabel('Scheduled reorder quantity',{exact:true}).fill('5');
  await page.getByLabel('Frozen tinybars per indicative INR minor unit',{exact:true}).fill('10');
+ // The legacy agreement has no commercial terms. Review a complete replacement rather than inheriting invented defaults.
+ const replacement=page.locator('.agreement-form');
+ for(const [label,value] of [
+  ['Product SKU','COFFEE-REVIEWED'],
+  ['Exact product specification','Whole coffee beans in sealed 1 kg bags'],
+  ['Required quality','Dry sealed packaging; no certification asserted'],
+  ['Permitted cities, comma separated','Mumbai'],
+  ['Delivery timezone','Asia/Kolkata'],
+  ['Delivery window starts, HH:mm','09:00'],
+  ['Delivery window ends, HH:mm','17:00'],
+  ['Delivery weekdays, Monday 1 to Sunday 7','1,2,3,4,5'],
+  ['Minimum delivery lead time, days','2'],
+  ['Exact baseline unit price, INR','100'],
+  ['Allowed price change, basis points (0 means exact)','0'],
+ ])await replacement.getByLabel(label,{exact:true}).fill(value);
+ await replacement.locator('select[name="acknowledgmentRule"]').selectOption('bilateral_receipt_before_next_order');
  await page.getByLabel('I have reviewed this replacement and the separate original funding.',{exact:true}).check();
  await page.getByRole('button',{name:'Save agreement proposal',exact:true}).click();
  await expect(page.locator('.agreement-leaf')).toHaveCount(2);
  expect(amendmentTerms).toBeTruthy();
+ expect(amendmentTerms.commercialTerms).toMatchObject({version:1,currency:'INR',sku:'COFFEE-REVIEWED',specification:'Whole coffee beans in sealed 1 kg bags',qualityRequirements:'Dry sealed packaging; no certification asserted',substitutionPolicy:'none',deliveryGeography:['Mumbai'],deliveryTimezone:'Asia/Kolkata',deliveryWindowStart:'09:00',deliveryWindowEnd:'17:00',deliveryWeekdays:[1,2,3,4,5],deliveryLeadDays:2,baselineUnitPriceMinor:10000,priceToleranceBps:0,acknowledgmentRule:'bilateral_receipt_before_next_order'});
  expect(amendmentTerms.id).toBeUndefined();expect(amendmentTerms.hash).toBeUndefined();expect(amendmentTerms.buyerSignature).toBeUndefined();expect(amendmentTerms.supplierSignature).toBeUndefined();
 
 });

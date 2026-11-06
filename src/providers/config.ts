@@ -16,7 +16,11 @@ export function secret(provider: string, name: string): string {
 export async function providerFetch(provider: string, url: string, init: RequestInit = {}): Promise<Response> {
   try {
     const response = await fetch(url, { ...init, signal: init.signal ?? AbortSignal.timeout(45_000), cache: "no-store" });
-    if (!response.ok) throw new ProviderError(provider, `${provider} returned HTTP ${response.status}.`, `HTTP_${response.status}`);
+    if (!response.ok) {
+      const requestId=response.headers.get('x-request-id');
+      const safeId=requestId&&/^[A-Za-z0-9_.:-]{1,256}$/.test(requestId)?requestId:undefined;
+      throw new ProviderError(provider, `${provider} returned HTTP ${response.status}.`, `HTTP_${response.status}`,{httpStatus:response.status,...(safeId?{requestId:safeId}:{})});
+    }
     return response;
   } catch (error) {
     if (error instanceof ProviderError) throw error;

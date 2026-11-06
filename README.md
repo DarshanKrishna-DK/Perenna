@@ -2,7 +2,7 @@
 
 Business moves smarter.
 
-A local English/Hindi procurement MVP in development, with agent negotiation, exact purchase approvals, independent operating funds and bilaterally bounded standing agreements. All eight pages use a pitch-black, neon-green Three.js world, the supplied logo, robotic typography and accessible spatial controls. The committed redesign checkpoint passed 162 automated tests and 28 browser checks. A fresh requirement audit reopened supplier participation, agreement terms, acknowledgment, voice controls and bilingual completeness work in TODO.md; those gaps are not claimed complete.
+A local English/Hindi procurement MVP with agent negotiation, exact purchase approvals, independent operating funds and bilaterally bounded standing agreements. All eight pages use a pitch-black, neon-green Three.js world, the supplied logo, robotic typography and accessible spatial controls. The expanded implementation includes business and supplier invitations, private rooms, editable fictional catalogues, weighted ranking, complete standing terms, independent order acknowledgment and cancellable voice capture. Verification passed 305 automated tests, all 82 guarded desktop/mobile browser checks, TypeScript and a production build. Remaining live-provider limits are tracked in TODO.md.
 
 ## Run locally
 
@@ -10,18 +10,20 @@ Use Node.js 24 and npm. Install dependencies with `npm ci`, copy the configurati
 
 For a production preview, run `npm run build` followed by `npm run start`. Start `npm run worker` separately only when a fresh execution allowance and signed policies authorize work. Keep the server and worker on the same private SQLite database. Preserve that database because it contains authority, usage and reconciliation history.
 
+Run `npm run worker -- --check` to initialize and inspect worker storage without executing queued jobs or scheduled orders. Disabled inference leaves queued requests intact. A complete fresh live journey requires provider availability, remaining authorized budgets and the relevant execution flags; a successful local build does not establish those conditions.
+
 Run `npm run typecheck`, `npm test` and `npm run build` for verification. With the server running, use `npx playwright test -c tests/browser/playwright.config.ts` for guarded desktop/mobile, accessibility and realtime checks. These tests block unmocked provider, payment and publication calls. They do not use a personal Chrome profile.
 
 Private credentials, wallet material, SQLite state, generated builds and test artifacts are excluded from Git. The root [TODO.md](TODO.md) tracks one-line completed and remaining items. [DESIGN.md](DESIGN.md) defines the shared visual system. The single [manual guide](docs/04_Perenna_Manual_Setup_Guide.md) records remaining owner actions.
 
 ## Verified integration boundaries
 
-- Real 0G inference completed English/Hindi parsing, public three-supplier negotiation and a private quote revision. All 20 authorized attempts used the user-confirmed mainnet API key and are consumed. Exact token cost and remaining balance are unknown. The output limit is now 512 tokens. Ten testnet 0G tokens are not API credit or additional authority.
+- Real 0G inference completed English/Hindi parsing, public three-supplier negotiation and a private quote revision. The original 20 attempts are consumed. Ten additional attempts were approved at 512 output tokens each; eight returned HTTP 502 during final verification, leaving two unused. Model discovery returned HTTP 200, which does not prove inference availability. Exact token cost and balance remain unknown; testnet 0G tokens are separate.
 - Hedera chain 296 testnet verified the protected service purchase, exact goods settlement, separate supplier fee, signed-review top-up, bilateral SPA activation, two autonomous purchases, dispute pause, revocation and withdrawal.
-- Arkiv Rabdi chain 7794095 verified five public writes and readback. Retrieved bilateral positive and adverse simulated-outcome commitments changed eligibility on a future request.
-- Sarvam passed four actual English/Hindi synthesis-to-transcription calls. Human microphone and listening acceptance remain unverified. No Groq inference ran.
+- Arkiv Rabdi chain 7794095 verified the original five public writes and a separately approved sixth standing-discovery listing, all with readback. Bilateral positive and adverse simulated-outcome commitments changed eligibility on a future request. The coarse listing leaves its agreement unsigned and inactive.
+- Sarvam passed four actual English/Hindi synthesis-to-transcription calls. The owner also confirmed English/Hindi microphone capture and editable transcripts. Personal speaker-playback acceptance remains separate. No Groq inference ran.
 
-New paid inference, public writes and testnet execution are paused after the authorized verification. Retained receipts remain available. Fresh execution needs a new explicit bounded allowance; do not reset usage records to regain authority. See [prize evidence](docs/prize-evidence.md) for public transaction references and limits.
+Inference, public-write and financial execution flags remain paused after verification, and retained receipts remain available. Two approved inference attempts remain, but the latest live inference check failed. Public writes and further financial verification require the relevant explicit authorization; do not reset usage records to regain authority. See [prize evidence](docs/prize-evidence.md) for public transaction references and limits.
 
 ## Product and custody scope
 
@@ -41,6 +43,8 @@ Run `node --env-file=.env.local scripts/prepare-spa-deployment.mjs PUBLIC_BUYER_
 
 ## Review the demo
 
+Use the retained verification account described in the private local `.data/live-mvp-client.json` file. This workspace has two published requests, four retained quote records, three confirmed orders, signed evidence and agreement history. The newest request records the current inference outage; select the older purchased request to inspect its successful negotiation. Historical receipts are historical proof, not a replay presented as live activity.
+
 1. Review the business profile, English/Hindi interface and a corrected buying request.
 2. Inspect its minimal Arkiv projection, versions, expiry and discovery evidence.
 3. Compare retained real agent turns, private-room scope and immutable quote revisions.
@@ -48,6 +52,8 @@ Run `node --env-file=.env.local scripts/prepare-spa-deployment.mjs PUBLIC_BUYER_
 5. Review simulated fulfillment, bilateral attestations and their measured effect on later screening.
 6. Inspect the bilateral standing terms, two autonomous receipts, stopped dispute, revocation and withdrawal.
 7. Compare actual wallet observations, reserved limits and collected revenue; unknown compute credit remains unknown.
+
+For a fresh demonstration, confirm a request, review its public projection, publish it on Arkiv, refresh screening, and start negotiation with the worker running and a remaining inference allowance. Only then compare and approve the exact current offer. Payment, supplier fee collection, signed evidence publication and agreement funding each retain their own reviewed authority. `ARKIV_DISCOVERY_MODE=local_sample` is an explicit controlled test mode with visible provenance; it does not satisfy live Arkiv publication evidence.
 
 ## License and assets
 

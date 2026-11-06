@@ -1,6 +1,6 @@
 # Perenna MCP and skill setup status
 
-Tooling was checked on 6 November 2026. The local MVP now has verified live integrations, all eight Three.js pages, 162 passing automated tests and 28 passing browser checks. All 20 mainnet-billed 0G attempts and five authorized Arkiv writes are consumed; further execution is paused. Current integration evidence is tracked in [prize-evidence.md](prize-evidence.md).
+Tooling observations below were checked on 6 November 2026 and remain checkpoint evidence, not a fresh connectivity claim. Expanded product source later passed 305 automated tests, a production build and 82 guarded browser cases. The original 20 mainnet-billed 0G attempts, five original Arkiv writes and one separately approved standing-discovery write are consumed. Eight of ten newly approved inference attempts returned HTTP 502; two remain. Current evidence and execution limits are tracked in [prize-evidence.md](prize-evidence.md).
 
 Desktop Commander remote was repaired using a fresh isolated npm cache. Its device came online and the local stdio handshake exposed 25 tools. The Codex remote connector still had a routing error. BrowserAct direct Chrome access verified the existing signed-in Hedera portal without a guest profile. The native computer-use/browser bridge remained unavailable. These observations establish access at that checkpoint, not permanent connectivity.
 

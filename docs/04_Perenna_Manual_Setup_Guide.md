@@ -2,41 +2,50 @@
 
 ## What you still need to do
 
-Updated on 6 November 2026. A fresh requirement audit identified additional product gaps, tracked in the root TODO.md. Stock and capacity checks, interrupted-job recovery and Arkiv publication reconciliation are now fixed. The current recovery/discovery source passed 204 independent automated tests, TypeScript, 32 browser checks and an isolated production build; the expanded projection review also passed its focused desktop/mobile checks. The current saved frontend runs at http://127.0.0.1:3000 in development mode. Another session's design edits remain preserved and unpublished.
+Updated on 6 November 2026. The expanded implementation passed 305 automated tests, TypeScript, an isolated production build and an 82-case desktop/mobile browser checkpoint. It includes supplier participation, membership consent, complete standing terms, separate acknowledgment, ranking and voice cleanup. Session-expiry recovery passed both viewports; the latest source checkpoint and remaining provider gate are tracked in the root TODO.md. The saved frontend runs at http://127.0.0.1:3000; existing design edits are preserved.
 
 - Review the rebuilt interface at http://127.0.0.1:3000 and its retained live receipts.
 - Use auth.email and auth.password from the private local .data/live-mvp-client.json file to inspect the retained verification workspace.
 - Rotate the test keys after the working MVP is ready, as you requested. This is not a current build gate.
-- To rerun paid inference or publish more records, provide a new explicit bounded allowance first. The existing inference and Arkiv allowances are exhausted. No further spending is required to review the retained demo.
-- Approve or leave paused the one additional coarse agreement listing already prepared in .data/live-arkiv-standing-discovery-review.json; its unsigned maximum fee estimate is 0.001 test tGLM.
+- Two of the ten additional approved 0G attempts remain; the original and approved alternate native routes both returned HTTP 502. The original route exposed an upstream quote EOF; fresh inference needs a working provider route.
+- The approved standing-discovery listing is published and read back; no additional wallet action is needed for that record.
+- English/Hindi microphone capture is owner-confirmed; optionally check personal speaker playback separately.
 
-Local implementation and testing can continue without further spending. Live verification of new Arkiv standing-agreement discovery will require a fresh explicit write allowance after its exact public projection and unsigned fee preparation are reviewable. Paid inference, Arkiv writes and Hedera execution flags remain paused in the private local configuration.
+No spending is required to review the retained demo. The published listing refers to a separate unsigned, unfunded proposal and does not accept or activate it. Its one-write allowance is consumed. Inference and financial execution flags remain paused in the private local configuration. Do not reset usage history. Existing paid-order and agreement receipts remain available even while external execution is paused.
 
 ## Verified integration checkpoint
 
 | Area | Actual evidence |
 | --- | --- |
-| 0G | Twenty authorized attempts used the user-confirmed mainnet API key. English/Hindi parsing, a seven-call three-supplier negotiation and a private Mango revision succeeded. Output is now capped at 512 tokens. Exact mainnet token cost and remaining credit balance are unknown. Ten testnet 0G tokens do not extend this inference allowance. |
+| 0G | The original twenty attempts established English/Hindi parsing, three-supplier negotiation and a private revision. A further ten attempts were approved at 512 output tokens each; eight returned HTTP 502 and two remain unused. Model listing returned HTTP 200, which does not establish inference recovery. Exact mainnet cost and balance are unknown. |
 | Hedera | Separate funded operating/executor 0.0.11332965, SPA supplier 0.0.11332983 and fee/top-up 0.0.11332984 are verified. Buyer 0.0.6886052 and native merchant 0.0.9823983 remain distinct. A signed-review 0.3 HBAR top-up, automatic 1,000-tinybar protected service purchase, exact 113,950-tinybar goods payment and separately approved 950-tinybar fee are confirmed. |
 | Standing agreement | Reviewed registry runtime, buyer creation and supplier acceptance are verified. Two real scheduled purchases paid 14,222 tinybars each under prior bilateral authority and a 60-second cadence. Simulated dispute, on-chain pause, revocation and unused-funding withdrawal are confirmed; remaining contract funding is zero. |
-| Arkiv | All five approved Rabdi records are confirmed and read back. A future request queried both bilateral signed simulated-outcome records. Monsoon changed from 78/ineligible to 80/eligible; Mango changed from 91/eligible to 79/ineligible at threshold 80. |
-| Speech | Four actual Sarvam calls passed English/Hindi synthesis-to-transcription checks. Human microphone and listening acceptance remain unverified. Groq inference has not run. |
+| Arkiv | Six approved Rabdi records are confirmed and read back, including the separately approved coarse standing-discovery listing. The original future request queried bilateral outcomes and changed Monsoon from 78/ineligible to 80/eligible and Mango from 91/eligible to 79/ineligible at threshold 80. |
+| Speech | Four actual Sarvam calls passed English/Hindi synthesis-to-transcription checks. The owner confirmed microphone capture and editable transcripts in both languages. Personal speaker playback remains a separate check. Groq inference has not run. |
 | Source | Tested milestones are pushed to the Perenna feature branch. No public application deployment or event submission has occurred. |
 
 ## Budget boundaries
 
 - Hedera remains inside the approved 10 test HBAR ceiling. The conservative combined upper bound is 6.19513096 HBAR, including retained fee maxima, both autonomous execution fee ceilings and the native service/goods/fee amounts. This is not an exact actual-spend claim. Seven EVM fee attributions remain conservatively reserved; there are no unresolved submitted transaction outcomes.
-- Arkiv used five of five approved writes. Each retained write maximum was 0.001 tGLM, below the authorized 0.002 per-write cap; the combined retained maximum is 0.005 tGLM, below 0.01. No further Arkiv write is authorized.
-- All 20 mainnet-billed 0G attempts are consumed. Earlier attempts retained their then-approved 900-token maximum; the final private reply passed under 512. Exact token charges and credit balance were not verified.
+- Arkiv used all five original writes plus the separately approved standing-discovery write. Each retained fee maximum is 0.001 test tGLM; the cumulative retained maximum is 0.006, below 0.01. No further write is authorized and no submitted outcome is unknown.
+- There are 28 durable mainnet-billed inference attempts against a cumulative 30-attempt approval. Eight fresh attempts returned HTTP 502, including request reference 9d4caa1cbf872c89. The two remaining attempts retain a 512-output-token ceiling. Exact charges and balance are unverified.
 - Sarvam's approved ceiling remains 100 credits, with only the recorded four verification calls made. Remaining credit value is unverified.
 
 ## Limits and review notes
 
-Physical delivery and dispute events are explicitly simulated. Real signatures and blockchain receipts do not establish independent business identity, physical truth or commercial revenue. The master prompt's separate-ledger, human-funded compute boundary is implemented; a fee-to-0G self-financing route is not established. Browser-wallet extension signing and human microphone acceptance remain separate owner checks.
+Physical delivery and dispute events are explicitly simulated. Real signatures and blockchain receipts do not establish independent business identity, physical truth or commercial revenue. The master prompt's separate-ledger, human-funded compute boundary is implemented; a fee-to-0G self-financing route is not established. Browser-wallet extension signing and personal speaker playback remain separate owner checks; microphone capture is owner-confirmed.
 
 The current Hedera skill-rubric assessment is [63/100](06_Hedera_Feasibility_Review.md), an assistant assessment rather than an official judge score. Transaction references and public schemas are consolidated in [prize-evidence.md](prize-evidence.md). New design guidance is in the root DESIGN.md.
 
 Store credentials only in the private local configuration. Do not paste signing keys into chat. The source repository excludes credentials, local state and generated artifacts.
+
+## Private data retention and deletion
+
+Captured microphone audio stays in memory during recording and transcription, with an eight MiB capture limit and a transcription timeout. Completion, cancellation, failure, oversize input and leaving the page clear the capture references. The application does not save microphone blobs to disk. Synthetic Sarvam verification WAV files are retained in ignored local artifacts. Provider-side retention is governed by the configured provider, not by a Perenna deletion guarantee.
+
+The local SQLite database retains business profiles, consent, private transcripts, audit events, usage, approvals and financial reconciliation records until the operator intentionally archives or removes the local demonstration. There is no automatic transcript purge or tenant-deletion interface. Technical error payloads are sanitized; development HTTP diagnostics are separate from business records. The prototype does not implement a production retention or compliance program.
+
+For deletion or archival, stop the application and worker first and keep records needed to reconcile submitted transactions. Deleting local files cannot delete public blockchain observations or provider copies. Never reset usage or financial journals to regain an allowance. This guide does not delete any data automatically.
 
 ## Original detailed setup reference
 

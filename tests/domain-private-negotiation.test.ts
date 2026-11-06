@@ -12,10 +12,14 @@ const context={userId:'private-owner',sessionId:'private-session'};
 const result={terms:{unitPriceMinor:2100,deliveryDays:2,summary:'Controlled supplier offer'},provider:'0G',requestId:'controlled-private-request',model:'fixture'};
 function request(){const intent=createIntent(tenant,{item:'coffee beans',quantity:50,unit:'kg',budgetMinor:2500000,deadline:new Date(Date.now()+604800000).toISOString(),location:'Mumbai'});put('intent',tenant,{...intent,discoveryMode:'local_sample'});put('message',tenant,{intentId:intent.id,roomId:intent.id+'-sup-mango',supplierId:'sup-mango',actor:'Buyer',text:'Could you improve delivery?',visibility:'private'});return intent;}
 function respond(wait?:Promise<void>){mocks.offer.mockImplementation(async(_input,controls)=>{await controls.reserve('0G','inference');if(wait)await wait;await controls.onUsage?.({provider:'0G',model:'fixture',requestId:result.requestId});return result;});}
-beforeEach(()=>{db().exec('DELETE FROM records; DELETE FROM events; DELETE FROM dedupe;');seedBusiness(tenant,'Private Test');vi.stubEnv('INFERENCE_MAX_CALLS','10');vi.stubEnv('HEDERA_ACCOUNT_ID','0.0.1');vi.stubEnv('HEDERA_MERCHANT_ACCOUNT_ID','0.0.2');vi.stubEnv('HEDERA_TINYBAR_PER_MINOR','1');mocks.offer.mockReset();});
+beforeEach(()=>{process.env.ARKIV_DISCOVERY_MODE='local_sample';db().exec('DELETE FROM records; DELETE FROM events; DELETE FROM dedupe;');seedBusiness(tenant,'Private Test');vi.stubEnv('INFERENCE_MAX_CALLS','10');vi.stubEnv('HEDERA_ACCOUNT_ID','0.0.1');vi.stubEnv('HEDERA_MERCHANT_ACCOUNT_ID','0.0.2');vi.stubEnv('HEDERA_TINYBAR_PER_MINOR','1');mocks.offer.mockReset();});
 afterEach(()=>{vi.unstubAllEnvs();});
 
 describe('private agent workflow authority',()=>{
+  it('leaves queued public work intact while inference is paused, without acquiring an allowance',async()=>{
+    vi.stubEnv('INFERENCE_ENABLED','false');const intent=request();put('job',tenant,{id:'paused-public-job',intentId:intent.id,intentVersion:intent.version,status:'queued',type:'negotiate',attempts:0,leaseUntil:0});
+    expect(await runNextJob()).toBe(false);expect(get('job',tenant,'paused-public-job')).toMatchObject({status:'queued',attempts:0});expect(get('intent',tenant,intent.id)?.status).toBe(intent.status);expect(settings(tenant).inferenceReserved).toBe(0);expect(list('usage',tenant)).toHaveLength(0);expect(mocks.offer).not.toHaveBeenCalled();
+  });
   it('recovers a persisted expired private lease on the worker tick without replaying or refunding inference usage',async()=>{
     const intent=request(),requestId='private-crashed-request',id='private-'+digest({tenant,intentId:intent.id,requestId});
     put('private_negotiation',tenant,{id,intentId:intent.id,supplierId:'sup-mango',status:'running',phase:'provider_requested',leaseUntil:Date.now()-1,requestId});

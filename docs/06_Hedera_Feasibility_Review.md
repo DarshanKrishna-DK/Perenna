@@ -21,11 +21,11 @@ Calculation: sum of each score divided by five, multiplied by its percentage wei
 
 ## Current evidence
 
-- Real 0G English/Hindi parsing, three-supplier public negotiation and a private immutable quote revision succeeded. All 20 authorized attempts are consumed. This API key bills mainnet credits/tokens; exact cost and remaining balance are unknown. Ten testnet 0G tokens do not extend the allowance.
+- Real 0G English/Hindi parsing, three-supplier public negotiation and a private immutable quote revision succeeded within the original twenty attempts. Eight of ten newly approved 512-token attempts returned HTTP 502; two remain. This key bills mainnet credits/tokens, with exact cost and balance unknown. Testnet tokens do not extend that allowance.
 - Hedera testnet has a deployed runtime-verified registry, separate funded roles and a signed-review operating top-up. Automatic protected capacity settled 1,000 tinybars under prior policy. Goods settled 113,950 tinybars under exact quote approval. A separately approved 950-tinybar supplier fee was collected.
 - Bilateral standing authority produced two scheduled purchases of 14,222 tinybars without new per-order approval. A simulated dispute stopped execution. On-chain pause, revocation and withdrawal succeeded; remaining contract funding is zero.
-- Five Arkiv writes are confirmed: two request versions, two bilateral signed simulated-outcome commitments and a future request. A fresh query changed Monsoon from 78/ineligible to 80/eligible and Mango from 91/eligible to 79/ineligible at threshold 80.
-- The final source passed 162 automated tests and a production build. All 28 browser checks passed on the redesigned interface, with actual WebGL on eight desktop/mobile routes and focused final readability checks.
+- Six Arkiv writes are confirmed: the original two request versions, two bilateral signed simulated-outcome commitments and future request, plus the separately approved proposed standing-discovery index. The outcome query changed Monsoon from 78/ineligible to 80/eligible and Mango from 91/eligible to 79/ineligible at threshold 80.
+- The redesign checkpoint passed 162 automated tests and 28 browser checks. Expanded source later passed 305 automated tests, a production build and 82 guarded browser cases. This does not change the rubric score or establish current provider availability.
 
 Public receipt and schema evidence is consolidated in [prize-evidence.md](prize-evidence.md). Source checkpoints are on the [Perenna feature branch](https://github.com/DarshanKrishna-DK/Perenna/tree/feat/mvp). There is no public application deployment or event submission.
 

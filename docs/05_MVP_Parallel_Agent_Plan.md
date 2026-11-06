@@ -2,7 +2,24 @@
 
 Updated on 6 November 2026. The original backend/provider implementation has a verified live vertical slice. The user's newer visual instruction supersedes the earlier interface: pitch black, neon green, supplied robot logo and a complete Three.js spatial rebuild across every page.
 
-A fresh requirement audit has reopened supplier participation, room memberships, editable catalogue and eligibility controls, full standing terms, separate order acknowledgment, publication controls and voice/bilingual completeness. The root TODO.md is authoritative for remaining work. The earlier verified slice and test counts do not prove these broader requirements complete.
+The expanded implementation now includes supplier participation, room memberships, editable catalogue and ranking controls, full standing terms, separate order acknowledgment, reviewed publication and voice cleanup. Its combined backend checkpoint passed 305 tests and its production browser checkpoint passed 82 desktop/mobile cases. The root TODO.md is authoritative for source publication and remaining live provider gates. Earlier live receipts remain historical evidence rather than proof of a fresh current execution.
+
+## Requirement audit for the demonstration
+
+| Requirement | Implementation and evidence | Remaining boundary |
+| --- | --- | --- |
+| FR01 to FR03, AC01 | Authenticated profiles, processing consent, active owner/member roles, supplier invitations and versioned permissions; onboarding, participation and request-authority tests. | No legal identity verification or independent customer adoption claim. |
+| FR04 to FR05, AC02 | English/Hindi interpretation, editable zoned intent fields, missing-field clarification and cancellable Sarvam capture; normalization, localization and browser speech checks. | Real Sarvam round trips are retained and microphone capture is owner-confirmed; personal speaker listening remains separate. Fresh 0G inference currently returns HTTP 502. |
+| FR06 to FR08, AC03 | Exact public-projection review and consent, private-field separation, Arkiv publication/readback, expiry and unknown-outcome reconciliation; six approved writes and focused publication/commercial-opening tests. | The newly published agreement index is a proposed discovery record, not agreement acceptance or funding. |
+| FR09 to FR10, AC04 | Signed, role-specific evidence, revocation/expiry checks, actual positive/adverse screening changes, no-new-agent policy and editable fictional fixtures. | Seeded history is disclosed and is not real-world supplier validation. |
+| FR11 to FR12, AC05 | Live bounded supplier turns, isolated contexts, durable events, cancellation, retry accounting and partial-offer retention; retained 0G request IDs and resilience tests. | Latest live 0G attempts failed safely. No replay is presented as live. |
+| FR13 to FR15, AC06 | Immutable comparable offers, own-supplier private revisions, scoped rooms, weighted ranking, plain exclusion reasons and fewer-than-three disclosure. | Real-business participation uses separate controlled local-sample browser sessions, not independent commercial suppliers. |
+| FR16 to FR17, AC07 | Exact approval digest, authenticated approver identity/time, current membership, quote/policy binding and race rejection; approval-identity and delayed-request tests. | Historical approvals retain their original attribution fields; history is not fabricated. |
+| FR18 to FR19, AC09 to AC10 | Hedera x402 goods/service settlement, independently authorized supplier fee, durable unknown-outcome reconciliation and receipt validation. | Live receipts predate the latest hardening; no additional payment is claimed. |
+| FR20 to FR21, AC08 | Separate goods/operating/fee ledgers, atomic caps and reservations, low-funds stops, signed-review top-up and actual balances. | Test tokens do not fund mainnet-billed 0G; no automatic self-financing claim. |
+| AC11 | Independent payment/acknowledgment/physical states, explicit delivery simulation, bilateral signed evidence and positive/adverse Arkiv commitments. | Acknowledgment and signatures do not establish physical delivery. |
+| Standing-agreement revision | Complete frozen terms, business identities and receipt authority; contract lifecycle, signed-baseline scheduling, concurrency limits, pre-broadcast checks and real supplier order access. | Two historical autonomous receipts are retained. New complete-term authorization paths have controlled regression coverage, not a new funded agreement. |
+| Realtime, privacy and interface | Durable cursor replay, tenant/room scope, revocation, fragment-only invitation tokens, one actual spatial world per route, mobile/desktop layouts and automated accessibility checks. | Session-expiry UI recovery passed on desktop and mobile. |
 
 ## Current parallel work
 
@@ -13,11 +30,11 @@ A fresh requirement audit has reopened supplier participation, room memberships,
 
 ## Verified core and remaining gates
 
-- Actual 0G mainnet API inference completed parsing, three-supplier public negotiation and a private immutable revision. All 20 authorized attempts are exhausted. The output ceiling is now 512; testnet 0G tokens do not extend API credits.
+- Actual 0G mainnet API inference completed parsing, three-supplier public negotiation and a private immutable revision within the original 20 attempts. Eight of ten newly approved 512-token attempts returned HTTP 502; two remain. Testnet 0G tokens do not extend API credits.
 - Actual Hedera testnet service, goods and separate supplier-fee settlement, signed-review funding, bilateral SPA activation, two autonomous purchases, dispute stop, pause, revocation and withdrawal are verified.
-- Five Arkiv writes and readback are verified. A later query changed both positive and adverse supplier eligibility under the same future policy. No further write is authorized.
+- Six Arkiv writes and readback are verified, including the separately approved proposed agreement index. A query changed both positive and adverse supplier eligibility under the same future policy. No further write is authorized.
 - The conservative combined Hedera upper bound is 6.19513096 HBAR, below 10. Unknown EVM fee attribution retains maxima; no submitted transaction outcome remains unresolved.
-- Final source passed 162 automated tests and a production build. All 28 browser checks passed, including accessibility and realtime recovery. All eight desktop/mobile routes rendered one actual WebGL scene without horizontal overflow; focused final readability checks also passed.
+- The redesign checkpoint passed 162 automated tests and 28 browser checks. Expanded source later passed 305 automated tests and an 82-case production browser checkpoint, including all eight desktop/mobile WebGL routes, accessibility and realtime recovery. Session-expiry UI recovery also passed on desktop and mobile.
 - Public source checkpoints d7e243e, 611e56c, c3c941d and e8dfc5c are pushed to feat/mvp, including the verified Three.js redesign. Push each verified major feature milestone or after one to two hours of active development, with one short understandable commit subject.
 - New paid inference, public writes and Hedera execution are paused after the bounded verification. Retained receipts remain available.
 - Self-financing earned fees into 0G compute and external customer demand remain unproved. Neither is inferred from synthetic records or testnet revenue.
@@ -75,7 +92,7 @@ The earned-fee-to-0G-credit experiment remains outside the mandatory critical pa
 
 Perenna, with the subtitle **Business moves smarter.**, represents a business through English and Hindi voice and chat. The MVP covers procurement: confirm buying intent, publish a minimal time-bound request, screen fictional suppliers using attributable evidence, negotiate live, compare offers, authorize a purchase, settle on testnet, simulate fulfillment, and update signed credibility evidence.
 
-Read all four source documents, particularly the complete [master prompt](03_Perenna_Codex_Master_Prompt.md). The 6 November standing-agreement revision supersedes older statements excluding recurring purchases or requiring approval of every goods order. The user's current request limits this session to conversion, planning, tooling setup, and feasibility review. The embedded instruction to start building does not override that limit.
+Read all four source documents, particularly the complete [master prompt](03_Perenna_Codex_Master_Prompt.md). The 6 November standing-agreement revision supersedes older statements excluding recurring purchases or requiring approval of every goods order. The initial request limited work to conversion and planning; the user subsequently authorized the complete local MVP build and verified source checkpoints. Provider execution remains subject to its separate bounded allowances.
 
 Keep three authorization paths distinct:
 

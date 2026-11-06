@@ -27,10 +27,13 @@ export function assertQuote(quote: Record<string,any>, hash: string, policyVersi
   if (!Number.isFinite(Date.parse(quote.expiresAt))||Date.parse(quote.expiresAt) <= now) throw new DomainError('This quote has expired or has an invalid expiry.',409);
   if(quote.terms.expiresAt&&quote.terms.expiresAt!==quote.expiresAt)throw new DomainError('Quote expiry differs from its approved terms.',409);
 }
-export function eligibility(supplier: Record<string,any>, intent: Record<string,any>, minimum: number) {
+export function eligibility(supplier: Record<string,any>, intent: Record<string,any>, minimum: number, policy:{excludeNewAgents?:boolean}={}) {
   const reasons: string[]=[];
   if (normalizeItem(String(intent.item))!=='coffee beans') reasons.push('Item is outside the supplier sample catalogue');
   if (normalizeUnit(String(intent.unit))!=='kg') reasons.push('Supplier quotes require matching kilogram units');
+  if(supplier.available===false) reasons.push('Supplier is currently unavailable');
+  if(policy.excludeNewAgents&&supplier.isNew===true) reasons.push('New suppliers are excluded by your policy');
+  if(intent.quantity<(supplier.minimumOrderQuantity||1)) reasons.push('Below the supplier minimum order quantity');
   if (supplier.credibility < minimum) reasons.push('Below your credibility threshold');
   if (supplier.stock < intent.quantity) reasons.push('Insufficient stock');
   if (normalizeCity(supplier.location) !== normalizeCity(intent.location)) reasons.push('Outside delivery area');

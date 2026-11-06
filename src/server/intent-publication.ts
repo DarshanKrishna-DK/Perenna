@@ -1,18 +1,24 @@
 import { DomainError, digest } from '../domain/procurement';
-import { publicIntentProjection } from '../domain/normalization';
+import {publicRequestCommitment} from '../domain/public-request';
 import { assertIntentOpen, required, settings } from './service';
 import { event, put, transaction } from './store';
+import {z} from 'zod';
 
-export function intentPublicationProjection(tenant:string,intent:Record<string,any>){
- if(!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(tenant))throw new DomainError('A private high-entropy business identity is required for public commitments.',409);
- const policyVersion=settings(tenant).policyVersion;const requestVersion=intent.version;const createdMs=Date.parse(intent.createdAt);
- if(!Number.isSafeInteger(requestVersion)||requestVersion<1||!Number.isSafeInteger(policyVersion)||policyVersion<1||!Number.isSafeInteger(createdMs)||createdMs<=0||createdMs>Date.now())throw new DomainError('Request creation and current policy metadata are invalid.',409);
- const {intentId,...coarse}=publicIntentProjection(intent);if(!Number.isSafeInteger(coarse.requestExpiresMs)||!Number.isSafeInteger(coarse.deliveryDeadlineMs)||coarse.requestExpiresMs<=Date.now()||coarse.deliveryDeadlineMs<=Date.now()||coarse.requestExpiresMs>coarse.deliveryDeadlineMs)throw new DomainError('Request offer expiry and delivery deadline must be future valid instants, with offers closing no later than delivery.',409);
- const privateTerms={item:intent.item,unit:intent.unit,quantity:intent.quantity,budgetMinor:intent.budgetMinor,currency:intent.currency||'INR',specification:intent.specification||'',deadline:intent.deadline,deliveryTimezone:intent.deliveryTimezone||'Asia/Kolkata',deliveryAddress:intent.deliveryAddress||'',contact:intent.contact||'',qualityRequirements:intent.qualityRequirements||'',substitutionPolicy:intent.substitutionPolicy||'none',hardCriteria:intent.hardCriteria||[],preferredCriteria:intent.preferredCriteria||[],expiresAt:intent.expiresAt};
- return {...coarse,requestVersion,policyVersion,createdMs,businessCommitment:'0x'+digest({domain:'perenna.business.commitment.v2',businessId:tenant}),requestCommitment:'0x'+digest({domain:'perenna.request.commitment.v2',businessId:tenant,requestId:intent.id,requestVersion,policyVersion,createdMs,privateTerms})};
-}
+export function intentPublicationProjection(tenant:string,intent:Record<string,any>){return publicRequestCommitment(tenant,intent,settings(tenant).policyVersion);}
 export function assertCurrentPublication(tenant:string,intent:Record<string,any>,projection:ReturnType<typeof intentPublicationProjection>){assertIntentOpen(tenant,intent.id,projection.requestVersion);if(digest(intentPublicationProjection(tenant,required('intent',tenant,intent.id)))!==digest(projection))throw new DomainError('Request or policy changed during publication preparation.',409);}
-export async function preparePublicIntent(tenant:string,id:string,expectedVersion:number){const intent=assertIntentOpen(tenant,id,expectedVersion);const projection=intentPublicationProjection(tenant,intent);const {prepareIntentPublication}=await import('../providers/arkiv');const result=await prepareIntentPublication(projection);transaction(()=>{assertCurrentPublication(tenant,intent,projection);const current=required('intent',tenant,id);put('intent',tenant,{...current,publicationPreparation:{projection,preparedAt:new Date().toISOString(),signed:false,submitted:false,snapshotOnly:true}});});return {...result,publicProjection:projection};}
+function privatePublicationReview(tenant:string,intent:Record<string,any>){
+ const policy=settings(tenant);
+ return {item:intent.item,quantity:intent.quantity,unit:intent.unit,specification:intent.specification||'',budgetMinor:intent.budgetMinor,currency:intent.currency||'INR',deliveryAddress:intent.deliveryAddress||'',contact:intent.contact||'',qualityRequirements:intent.qualityRequirements||'',substitutionPolicy:intent.substitutionPolicy||'none',hardCriteria:intent.hardCriteria||[],preferredCriteria:intent.preferredCriteria||[],procurementPerOrderCapMinor:policy.procurementPerOrderCapMinor,procurementSessionCapMinor:policy.procurementSessionCapMinor,procurementDailyCapMinor:policy.procurementDailyCapMinor,policyVersion:policy.policyVersion};
+}
+export async function publishReviewedIntent(tenant:string,id:string,input:unknown,actorId:string){
+ const consent=z.object({expectedVersion:z.number().int().positive(),confirmPublic:z.literal(true),projectionDigest:z.string().regex(/^[0-9a-f]{64}$/)}).strict().parse(input);
+ if(typeof actorId!=='string'||!actorId)throw new DomainError('Authenticated publication identity is required.',403);
+ const intent=assertIntentOpen(tenant,id,consent.expectedVersion),projection=intentPublicationProjection(tenant,intent);
+ if(digest(projection)!==consent.projectionDigest||!intent.publicationPreparation?.projection||digest(intent.publicationPreparation.projection)!==consent.projectionDigest)throw new DomainError('The request or policy changed. Review the exact public projection again before publication.',409);
+ transaction(()=>{assertCurrentPublication(tenant,intent,projection);put('publication_consent',tenant,{intentId:id,actorId,requestVersion:consent.expectedVersion,policyVersion:projection.policyVersion,projectionDigest:consent.projectionDigest,confirmedAt:new Date().toISOString()});});
+ return publishPublicIntent(tenant,id,consent.expectedVersion);
+}
+export async function preparePublicIntent(tenant:string,id:string,expectedVersion:number){const intent=assertIntentOpen(tenant,id,expectedVersion);const projection=intentPublicationProjection(tenant,intent);const {prepareIntentPublication}=await import('../providers/arkiv');const result=await prepareIntentPublication(projection);transaction(()=>{assertCurrentPublication(tenant,intent,projection);const current=required('intent',tenant,id);put('intent',tenant,{...current,publicationPreparation:{projection,preparedAt:new Date().toISOString(),signed:false,submitted:false,snapshotOnly:true}});});return {...result,publicProjection:projection,projectionDigest:digest(projection),privateReview:privatePublicationReview(tenant,intent)};}
 export async function publishPublicIntent(tenant:string,id:string,expectedVersion:number){
  const existing=required('intent',tenant,id);if(existing.publicationStatus==='unknown')return reconcilePublicIntent(tenant,id);
  const intent=assertIntentOpen(tenant,id,expectedVersion);const projection=intentPublicationProjection(tenant,intent);

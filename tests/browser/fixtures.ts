@@ -11,7 +11,8 @@ export async function guardProviderBoundaries(context:BrowserContext,baseURL:str
   if(path==='/api/funds'&&request.method()==='GET')return route.fulfill({json:{wallets:{},pendingCommitments:{goodsAtomic:'0',operatingAtomic:'0',platformFeesAtomic:'0'},settledFeeRevenueAtomic:'0',inferenceCredits:{status:'unknown'},topups:[],networkCharges:[]}});
   if(!path.startsWith('/api/'))return route.continue();
   if(request.method()==='GET'){
-   if(/^\/api\/(workspace|providers(?:\/capabilities)?|events|evidence|service-policy|signing-authority)$/.test(path)||/^\/api\/(intents|orders)\/[^/]+$/.test(path))return route.continue();
+   if(/^\/api\/(demo-catalogue|memberships|members|invitations|participants|rooms(?:\/[^/]+(?:\/(?:messages|events|export))?)?)$/.test(path))return route.continue();
+   if(/^\/api\/(workspace|providers(?:\/capabilities)?|events|evidence|service-policy|signing-authority)$/.test(path)||/^\/api\/(intents|orders)\/[^/]+$/.test(path)||/^\/api\/orders\/[^/]+\/outcomes$/.test(path))return route.continue();
   }else if(/^\/api\/(auth|intents|messages|settings|business-profile)$/.test(path)||/^\/api\/intents\/[^/]+\/(pause|resume|cancel)$/.test(path))return route.continue();
   return route.fulfill({status:409,json:{error:'This provider, payment or publication boundary requires an explicit browser fixture. No live call is permitted.'}});
  });

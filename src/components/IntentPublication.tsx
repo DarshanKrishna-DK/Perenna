@@ -1,0 +1,47 @@
+'use client';
+import {useEffect,useState} from 'react';
+import {formatUnits} from 'viem';
+import {localize} from '../i18n/localize';
+
+type Row=Record<string,any>;
+export function IntentPublication({intents,language='en'}:{intents:Row[];language?:string}){
+ const hi=language==='hi',t=(en:string,hindi:string)=>hi?hindi:en;
+ const [selected,setSelected]=useState(intents[0]?.id||''),[review,setReview]=useState<Row|null>(null),[consent,setConsent]=useState(false),[latest,setLatest]=useState<Row|null>(null),[screening,setScreening]=useState<Row[]|null>(null),[busy,setBusy]=useState(false),[error,setError]=useState<Row|null>(null),[notice,setNotice]=useState('');
+ const intent=intents.find(value=>value.id===selected),projection=review?.publicProjection,privateReview=review?.privateReview;
+ useEffect(()=>{if(!intents.some(value=>value.id===selected))setSelected(intents[0]?.id||'');},[intents,selected]);
+ useEffect(()=>{setReview(null);setConsent(false);setLatest(null);setScreening(null);setError(null);setNotice('');},[selected,intent?.version]);
+ const status=latest?.id===intent?.id?latest?.publicationStatus:intent?.publicationStatus;
+ const closed=!intent||['cancelled','paused','expired'].includes(intent.status)||Date.parse(intent.expiresAt)<=Date.now();
+ const money=(value:unknown)=>new Intl.NumberFormat(hi?'hi-IN':'en-IN',{style:'currency',currency:privateReview?.currency||'INR'}).format(Number(value||0)/100);
+ const time=(value:number)=>new Date(value).toISOString();
+ async function post(operation:string,body:Row={}){
+  if(!intent)return null;
+  setBusy(true);setError(null);setNotice('');
+  try {
+   const response=await fetch(`/api/intents/${intent.id}/${operation}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:AbortSignal.timeout(60000)});
+   const value=await response.json();
+   if(!response.ok){if(response.status===409&&operation==='publish'){setReview(null);setConsent(false);}setError({message:value.error||'Request could not complete.',code:value.code,status:response.status});return null;}
+   return value;
+  }catch{setError({message:'The request outcome is not confirmed. Recheck the original publication before retrying.',code:'OUTCOME_UNKNOWN'});return null;}
+  finally{setBusy(false);}
+ }
+ return <section className="glass operating-services intent-publication"><div className="section-title"><div><span className="eyebrow">{t('Your request, your disclosure','आपका अनुरोध, आपकी अनुमति')}</span><h2>{t('Review. Publish. Find your suppliers.','समीक्षा करें। प्रकाशित करें। आपूर्तिकर्ता खोजें।')}</h2></div><span className="status">{t('Arkiv testnet','Arkiv टेस्टनेट')}</span></div>
+  <p className="muted">{t('Review the public request and the details that stay private before supplier discovery. Publication and screening are separate from negotiation and payment.','आपूर्तिकर्ता खोजने से पहले सार्वजनिक अनुरोध और निजी विवरण की समीक्षा करें। प्रकाशन और खोज, बातचीत और भुगतान से अलग हैं।')}</p>
+  {!intents.length?<p className="fine">{t('Save a buying request above to review its publication.','प्रकाशन की समीक्षा के लिए पहले ऊपर खरीद अनुरोध सहेजें।')}</p>:<>
+   <label className="field"><span>{t('Request to publish or screen','प्रकाशन या खोज के लिए अनुरोध')}</span><select value={selected} onChange={event=>setSelected(event.target.value)} disabled={busy}>{intents.map(value=><option key={value.id} value={value.id}>{value.item} / {value.quantity} {value.unit}</option>)}</select></label>
+   <p className="fine">{t('Publication state','प्रकाशन की स्थिति')}: {localize(status||'not_published',language)}</p>
+   <div className="action-row"><button type="button" className="outline" disabled={busy||closed||['publishing','unknown'].includes(status)} onClick={async()=>{setConsent(false);const value=await post('publication-prepare',{expectedVersion:intent?.version});if(value)setReview(value);}}>{t('Review request publication','अनुरोध के प्रकाशन की समीक्षा करें')}</button>
+   <button type="button" className="outline" disabled={busy||closed||status!=='confirmed'} onClick={async()=>{const value=await post('screening-refresh',{expectedVersion:intent?.version});if(value){setScreening(value.suppliers);setNotice(t('Current Arkiv evidence was read. No negotiation or payment was started.','वर्तमान Arkiv साक्ष्य पढ़े गए। बातचीत या भुगतान शुरू नहीं किया गया।'));}}}>{t('Refresh supplier screening','आपूर्तिकर्ताओं की पात्रता फिर जांचें')}</button>
+   {['publishing','unknown'].includes(status)&&<button type="button" className="outline" disabled={busy} onClick={async()=>{const value=await post('publication-reconcile');if(value){setLatest(value);setNotice(t('The original publication was checked without submitting another write.','दूसरा लेखन भेजे बिना मूल प्रकाशन की स्थिति जांची गई।'));}}}>{t('Recheck original publication','मूल प्रकाशन की स्थिति जांचें')}</button>}</div>
+   {projection&&<div className="chain-review"><h3>{t('Public on Arkiv','Arkiv पर सार्वजनिक')}</h3><dl>{[[t('Item','वस्तु'),projection.item],[t('Quantity and unit','मात्रा और इकाई'),`${projection.quantity} ${projection.unit}`],[t('City only','केवल शहर'),projection.area],[t('Offers close, UTC','प्रस्ताव की अंतिम तिथि, UTC'),time(projection.requestExpiresMs)],[t('Delivery deadline, UTC','वितरण की अंतिम तिथि, UTC'),time(projection.deliveryDeadlineMs)],[t('Delivery timezone','वितरण का समय क्षेत्र'),projection.deliveryTimezone],[t('Request / policy version','अनुरोध / नीति का संस्करण'),`${projection.requestVersion} / ${projection.policyVersion}`],[t('Maximum write fee, tGLM','अधिकतम लेखन शुल्क, tGLM'),formatUnits(BigInt(review?.maximumFeeWei||'0'),18)]].map(([label,value])=><div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
+    <details><summary>{t('Public commitments and creation time','सार्वजनिक प्रतिबद्धताएं और निर्माण का समय')}</summary><dl>{[[t('Created, UTC','निर्माण, UTC'),time(projection.createdMs)],[t('Business commitment','व्यवसाय की प्रतिबद्धता'),projection.businessCommitment],[t('Request commitment','अनुरोध की प्रतिबद्धता'),projection.requestCommitment]].map(([label,value])=><div key={label}><dt>{label}</dt><dd className="receipt">{value}</dd></div>)}</dl></details>
+    {privateReview&&<><h3>{t('Kept in your private workspace','आपके निजी कार्यस्थल में रहेगा')}</h3><dl>{[[t('Specification','विवरण'),privateReview.specification||t('No additional specification','अतिरिक्त विवरण नहीं')],[t('Budget','बजट'),money(privateReview.budgetMinor)],[t('Exact delivery address','पूरा वितरण पता'),privateReview.deliveryAddress||t('Not provided','नहीं दिया गया')],[t('Contact','संपर्क'),privateReview.contact||t('Not provided','नहीं दिया गया')],[t('Quality','गुणवत्ता'),privateReview.qualityRequirements||t('Not provided','नहीं दिया गया')],[t('Substitutions','विकल्प'),privateReview.substitutionPolicy],[t('Per-order cap','प्रति ऑर्डर सीमा'),money(privateReview.procurementPerOrderCapMinor)],[t('Session cap','इस सत्र की सीमा'),money(privateReview.procurementSessionCapMinor)],[t('Daily cap','दैनिक सीमा'),money(privateReview.procurementDailyCapMinor)]].map(([label,value])=><div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl><p className="fine">{t('Mandatory criteria','अनिवार्य मानदंड')}: {(privateReview.hardCriteria||[]).join(', ')||t('None specified','निर्दिष्ट नहीं')}<br/>{t('Preferences','प्राथमिकताएं')}: {(privateReview.preferredCriteria||[]).join(', ')||t('None specified','निर्दिष्ट नहीं')}</p></>}
+    <label className="signing-toggle"><input type="checkbox" checked={consent} onChange={event=>setConsent(event.target.checked)}/><span>{t('Publish this exact public request and retain the listed private details.','यह सटीक सार्वजनिक अनुरोध प्रकाशित करें और सूचीबद्ध निजी विवरण कार्यस्थल में रखें।')}</span></label><button type="button" className="primary" disabled={busy||!consent||closed} onClick={async()=>{const value=await post('publish',{expectedVersion:projection.requestVersion,confirmPublic:true,projectionDigest:review?.projectionDigest});if(value){setLatest(value);setReview(null);setConsent(false);setNotice(value.publicationStatus==='confirmed'?t('The reviewed request is confirmed on Arkiv.','समीक्षा किया गया अनुरोध Arkiv पर पुष्ट है।'):t('Publication has not been confirmed. Recheck its original outcome.','प्रकाशन की पुष्टि नहीं हुई है। मूल परिणाम फिर जांचें।'));}}}>{t('Publish reviewed request','समीक्षा किया अनुरोध प्रकाशित करें')}</button>
+   </div>}
+   {screening&&<div><h3>{t('Current supplier screening','आपूर्तिकर्ताओं की वर्तमान पात्रता')}</h3>{screening.map(supplier=><article className="operating-policy" key={supplier.id}><strong>{supplier.name}</strong><p>{supplier.credibility}/100 · {supplier.eligible?t('Eligible','पात्र'):t('Excluded','अपात्र')}</p>{supplier.reasons?.length>0&&<ul>{supplier.reasons.map((reason:string)=><li key={reason}>{localize(reason,language)}</li>)}</ul>}</article>)}</div>}
+   {latest?.arkiv?.entityKey&&<p className="receipt">{latest.arkiv.entityKey}</p>}
+  </>}
+  {notice&&<p role="status" className="feedback">{notice}</p>}
+  {error&&<div role="alert" className="feedback error"><p>{hi?(error.code==='AUTHORIZATION_REQUIRED'?'इस लेखन की अनुमति अभी रुकी है। सीमित बजट की स्वीकृति आवश्यक है।':error.code==='CONFIGURATION_REQUIRED'?'आवश्यक सेवा का विन्यास पूरा नहीं है। सेटिंग में सेवा की स्थिति जांचें।':'अनुरोध पूरा नहीं हुआ। बदले हुए विवरण की फिर समीक्षा करें या मूल परिणाम जांचें।'):error.message}</p>{hi&&<details><summary>सेवा का मूल संदेश</summary><p>{error.message}</p></details>}</div>}
+ </section>;
+}

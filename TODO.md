@@ -1,5 +1,16 @@
 # Perenna MVP to-do
 
+- [x] Resume the complete demo MVP build after the latest user instruction; preserve all existing edits.
+- [x] Record ten additional authorized mainnet-billed 0G calls with a 512-token output cap; keep other execution allowances unchanged.
+- [x] Pass all 82 desktop/mobile browser checks plus 305 automated tests, TypeScript and the final production build.
+- [x] Inspect the retained live workspace at port 3000 with three confirmed order receipts, one canvas per page and no client errors or overflow.
+- [x] Record six original-route failures and two approved alternate-route HTTP 502 failures; retain two attempts and keep inference paused.
+- [x] Fix negotiated standing-price scheduling, paused-worker queue preservation and pre-broadcast authority checks with focused tests.
+- [x] Prepare one current unsigned and unfunded standing-discovery proposal with an actual 0.001 test tGLM fee estimate.
+- [x] Stop the isolated production verification server; retain the existing preview at http://127.0.0.1:3000.
+- [x] Push the recovery and discovery checkpoint as 7ccdace with 204 automated tests, 32 browser checks and an isolated production build.
+- [x] Review and verify the expanded implementation while preserving the other session's design edits.
+- [ ] Push the latest verified feature checkpoint and updated demo instructions to GitHub.
 - [x] Convert the supplied DOCX specifications to Markdown and remove the converted originals.
 - [x] Implement persistent authenticated business workspaces with tenant isolation and realtime recovery.
 - [x] Verify English and Hindi parsing, public negotiation and private offer revisions with real 0G request IDs.
@@ -21,19 +32,38 @@
 - [x] Preserve the other session's six modified frontend files while refreshing the local preview.
 - [x] Inspect the current landing page with rendered 3D elements at desktop and mobile sizes without horizontal overflow.
 - [x] Fix development-mode scene readiness cleanup and pass desktop/mobile reduced-motion load and refresh checks.
-- [ ] Finish and verify the other session's latest frontend edits before publishing them.
+- [x] Verify the preserved frontend edits across all eight desktop/mobile routes without overwriting their design.
 - [x] Unify stock reservations across one-off and standing orders and revalidate current paid capacity restrictions.
 - [x] Recover interrupted private inference without replaying calls or releasing another job's reservation.
 - [x] Reconcile uncertain Arkiv publications from their original signed transaction without submitting a duplicate.
 - [x] Implement private-by-default standing-agreement discovery with reviewed publication consent and read-only queries.
-- [ ] Verify one real standing-agreement discovery write after approval of the prepared 0.001 tGLM fee estimate.
-- [ ] Complete the current requirement audit and distinguish product gaps from optional sponsor submission work.
-- [ ] Expose complete request publication review and read-only Arkiv screening refresh in the buyer interface.
-- [ ] Add real business and room memberships so an onboarded supplier can participate across buyer workspaces.
-- [ ] Add editable synthetic supplier controls, no-new-agent screening and visible exclusion and ranking reasons.
-- [ ] Complete standing-agreement specification, delivery-window, acknowledgment and renewal terms.
-- [ ] Separate supplier order acknowledgment from confirmed payment and support unresolved acknowledgment recovery.
-- [ ] Add voice recording discard, finish core Hindi copy and test microphone permission and cancellation states.
-- [ ] Add intentional delayed, cancelled and failed fulfillment simulations with persistent provenance.
-- [ ] Complete onboarding service-area, procurement-preference and consent review.
-- [ ] Continue eligible negotiations after individual supplier failures and add bounded retry jitter.
+- [x] Confirm the newly approved standing-discovery write and query readback on Arkiv while leaving the agreement unsigned and inactive.
+- [x] Audit FR01 to FR21, AC01 to AC11 and standing-agreement coverage; separate provider limits from optional sponsor submission assets.
+- [x] Add request publication review, private-field separation, exact consent and read-only screening; desktop/mobile review checks passed.
+- [x] Verify the screening-refresh HTTP endpoint against existing Arkiv records without new inference, writes or payments.
+- [x] Implement business memberships, invitation consent, supplier rooms, scoped quotes/events/exports and revocation guards with focused security tests.
+- [x] Verify desktop and mobile supplier/member workflows, onboarding consent and membership revocation.
+- [x] Implement operator-gated synthetic catalogue editing, versioned screening and weighted ranking with focused tests.
+- [x] Verify catalogue seeding and mount operator-gated controls; configure the retained local owner and confirm read-only access.
+- [x] Display server-ranked offers, retained initial offers and partial-negotiation failure provenance.
+- [x] Implement frozen standing specifications, delivery windows, pricing tolerance, acknowledgment and renewal conditions with focused tests.
+- [x] Verify standing-price tolerance and English/Hindi item, unit and city normalization through full draft/preflight tests.
+- [x] Implement independent supplier acknowledgment and intentional delayed/cancelled/failed/disputed fulfillment with persisted provenance.
+- [x] Pass controlled desktop/mobile checks for separate acknowledgment and intentional fulfillment controls without payments.
+- [x] Implement recording discard, abort and late-response protection; eight mobile voice/Hindi scenarios and four localization tests passed.
+- [x] Add onboarding service area, private procurement preferences and server-recorded processing consent with focused API tests.
+- [x] Finish mobile participation checks and pass the 80-case combined production browser checkpoint.
+- [x] Rebuild and pass regression checks after final approval, standing-order authorization and session-recovery fixes.
+- [x] Verify a clean credential-free npm installation with 271 packages, zero audit vulnerabilities and a successful production build.
+- [x] Pass the 269-test integrated unit checkpoint and TypeScript before the final audit fixes.
+- [x] Bind new standing terms to server-derived business identities and active receipt authorities with focused tests.
+- [x] Require current Arkiv publication or explicitly disclosed local sample mode before commercial offers, approval and signing.
+- [x] Pass six fragment invitation signup, login and membership checks plus two legacy-link rejection checks without bearer tokens in request URLs.
+- [x] Pass 24 controlled voice cleanup, size-limit, timeout and cancellation cases plus two desktop/mobile room disclosure checks.
+- [x] Pass focused invitation security and standing identity checks plus final TypeScript checks without paid calls or blockchain writes.
+- [x] Rerun supplier participation on a controlled local_sample snapshot and resolve the earlier combined browser regression failures.
+- [x] Verify audio cleanup, capture-size limits and transcription timeout in the production snapshot.
+- [x] Record the owner's confirmation that English and Hindi microphone recordings and editable transcripts work.
+- [ ] Confirm personal speaker-playback acceptance separately from the verified synthetic Sarvam audio round trips.
+- [x] Implement per-supplier negotiation failure recovery, retained initial offers and bounded jittered retries with per-attempt budgets.
+- [ ] Verify fresh live 0G negotiation after provider recovery or an approved alternate route before declaring the demo fully live.

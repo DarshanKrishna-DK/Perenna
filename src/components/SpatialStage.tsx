@@ -42,7 +42,7 @@ export function SpatialStage({mode,status,className='',variant='immersive',onRea
  const failure=()=>{setFailed(true);setLoaded(false);ready.current?.(false);};
  return <div ref={root} className={`spatial-stage spatial-stage--${variant} ${className}`} data-scene-mode={mode} data-scene-state={failed?'fallback':loaded?'ready':'loading'} aria-hidden="true">
   {(failed||(!loaded&&!mobile))&&<div className="spatial-fallback"><img src="/brand/perenna-logo.png" alt=""/><span className="spatial-label">PERENNA / {mode.toUpperCase()}</span></div>}
-  {supported&&!failed&&<SceneBoundary onFailure={failure}><Scene mode={mode} motion={motion} mobile={mobile} reduced={reduced} visible={visible} onFailure={failure} onReady={()=>{setLoaded(true);ready.current?.(true);}}/></SceneBoundary>}
+  {supported&&!failed&&<SceneBoundary onFailure={failure}><Scene mode={mode} motion={motion} mobile={mobile} reduced={reduced} visible={visible} contained={variant==='hero'} onFailure={failure} onReady={()=>{setLoaded(true);ready.current?.(true);}}/></SceneBoundary>}
   {status&&<span className="spatial-caption">{status}</span>}
  </div>;
 }

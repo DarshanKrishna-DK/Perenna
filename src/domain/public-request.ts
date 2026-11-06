@@ -1,0 +1,10 @@
+import {DomainError,digest} from './procurement';
+import {publicIntentProjection} from './normalization';
+export function publicRequestCommitment(tenant:string,intent:Record<string,any>,policyVersion:number){
+ if(!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(tenant))throw new DomainError('A private high-entropy business identity is required for public commitments.',409);
+ const requestVersion=intent.version;const createdMs=Date.parse(intent.createdAt);
+ if(!Number.isSafeInteger(requestVersion)||requestVersion<1||!Number.isSafeInteger(policyVersion)||policyVersion<1||!Number.isSafeInteger(createdMs)||createdMs<=0||createdMs>Date.now())throw new DomainError('Request creation and current policy metadata are invalid.',409);
+ const {intentId,...coarse}=publicIntentProjection(intent);if(!Number.isSafeInteger(coarse.requestExpiresMs)||!Number.isSafeInteger(coarse.deliveryDeadlineMs)||coarse.requestExpiresMs<=Date.now()||coarse.deliveryDeadlineMs<=Date.now()||coarse.requestExpiresMs>coarse.deliveryDeadlineMs)throw new DomainError('Request offer expiry and delivery deadline must be future valid instants, with offers closing no later than delivery.',409);
+ const privateTerms={item:intent.item,unit:intent.unit,quantity:intent.quantity,budgetMinor:intent.budgetMinor,currency:intent.currency||'INR',specification:intent.specification||'',deadline:intent.deadline,deliveryTimezone:intent.deliveryTimezone||'Asia/Kolkata',deliveryAddress:intent.deliveryAddress||'',contact:intent.contact||'',qualityRequirements:intent.qualityRequirements||'',substitutionPolicy:intent.substitutionPolicy||'none',hardCriteria:intent.hardCriteria||[],preferredCriteria:intent.preferredCriteria||[],expiresAt:intent.expiresAt};
+ return {...coarse,requestVersion,policyVersion,createdMs,businessCommitment:'0x'+digest({domain:'perenna.business.commitment.v2',businessId:tenant}),requestCommitment:'0x'+digest({domain:'perenna.request.commitment.v2',businessId:tenant,requestId:intent.id,requestVersion,policyVersion,createdMs,privateTerms})};
+}

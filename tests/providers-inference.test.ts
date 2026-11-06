@@ -5,6 +5,14 @@ afterEach(()=>{vi.unstubAllEnvs();vi.unstubAllGlobals();});
 function enabled(){vi.stubEnv("INFERENCE_ENABLED","true");vi.stubEnv("INFERENCE_MAX_CALLS","10");vi.stubEnv("ZERO_G_MODEL","0gm-1.0-35b-a3b");vi.stubEnv("ZERO_G_API_KEY","fixture-not-a-live-key");}
 const extracted={item:"coffee",quantity:10,unit:"kg",budgetMinor:null,deliveryDays:null,location:null,missing:["budget","delivery","location"]};
 describe("structured provider responses",()=>{
+ it('uses the alternate native model capability declaration without weakening JSON validation or token limits',async()=>{
+  enabled();vi.stubEnv('ZERO_G_MODEL','0gm-1.0-35b-a3b-sia');let request:any;
+  vi.stubGlobal('fetch',async(_url:any,init:any)=>{request=JSON.parse(init.body);return Response.json({id:'native-alternate-request',choices:[{finish_reason:'stop',message:{content:JSON.stringify(extracted)}}]});});
+  const result=await interpretIntent('Coffee request','en',{reserve:async()=>{}});
+  expect(request.response_format).toBeUndefined();expect(request.max_tokens).toBe(512);expect(request.chat_template_kwargs).toEqual({enable_thinking:false});expect(result.value).toEqual(extracted);expect(result.provider).toBe('0G');
+  vi.stubGlobal('fetch',async()=>Response.json({id:'native-alternate-invalid',choices:[{finish_reason:'stop',message:{content:'Unstructured supplier text'}}]}));
+  await expect(interpretIntent('Coffee request','en',{reserve:async()=>{}})).rejects.toMatchObject({code:'INVALID_RESPONSE'});
+ });
  it('preserves explicit private delivery details and richer review criteria without inventing an exchange rate',async()=>{
   enabled();let input:any;const richer={...extracted,specification:'Whole beans',currency:'USD',budgetMinor:null,deliveryDate:'2026-11-12',deliveryTime:'17:30',deliveryTimezone:'Asia/Kolkata',location:'Mumbai',deliveryAddress:'Private delivery street',contact:'private@example.invalid',qualityRequirements:'Standard grade',substitutionPolicy:'ask',hardCriteria:['whole beans'],preferredCriteria:['earlier delivery'],quoteExpiresAt:'2026-11-10T12:00:00Z',missing:['supported INR budget']};
   vi.stubGlobal('fetch',vi.fn(async(_url,init)=>{input=JSON.parse(JSON.parse(init.body).messages[1].content);return Response.json({id:'rich-parse',choices:[{finish_reason:'stop',message:{content:JSON.stringify(richer)}}]});}));

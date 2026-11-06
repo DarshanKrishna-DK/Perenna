@@ -4,7 +4,7 @@ test('two authenticated sessions receive persisted messages and reject unrelated
   const email = `realtime-${crypto.randomUUID()}@example.invalid`;
   const password = 'Synthetic-session-check-2026';
   const headers = {Origin:baseURL!};
-  const registration = await page.request.post('/api/auth', {headers, data:{action:'register', email, password, name:'Session check', businessName:'Perenna Session Check'}});
+  const registration = await page.request.post('/api/auth', {headers, data:{action:'register', email, password, name:'Session check', businessName:'Perenna Session Check',serviceArea:'Mumbai',workspaceConsent:true}});
   expect(registration.ok()).toBe(true);
   const created = await page.request.post('/api/intents', {headers, data:{item:'Coffee beans', quantity:50, unit:'kg', budgetMinor:2500000, deadline:new Date(Date.now()+604800000).toISOString(), location:'Mumbai'}});
   expect(created.ok()).toBe(true);
@@ -30,7 +30,7 @@ test('two authenticated sessions receive persisted messages and reject unrelated
     await observer.getByRole('button', {name:'Private', exact:true}).click();
     await observer.getByLabel('Private conversation supplier').selectOption('sup-mango');
     await expect(observer.getByText(privateText, {exact:true})).toBeVisible();
-    expect((await unrelated.request.post('/api/auth', {headers, data:{action:'register', email:`isolated-${crypto.randomUUID()}@example.invalid`, password, name:'Unrelated owner', businessName:'Unrelated Business'}})).ok()).toBe(true);
+    expect((await unrelated.request.post('/api/auth', {headers, data:{action:'register', email:`isolated-${crypto.randomUUID()}@example.invalid`, password, name:'Unrelated owner', businessName:'Unrelated Business',serviceArea:'Mumbai',workspaceConsent:true}})).ok()).toBe(true);
     expect((await unrelated.request.get('/api/intents/'+intent.id)).status()).toBe(404);
     const events = await (await unrelated.request.get('/api/events')).text();
     expect(events).not.toContain(intent.id);

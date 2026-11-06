@@ -8,7 +8,7 @@ import type {SpatialMode, SceneMotion} from './SpatialStage';
 
 const lime='#a4ff00',font='/fonts/orbitron-600.typeface.json';
 const labels:Record<SpatialMode,string>={landing:'BUSINESS IN MOTION',onboarding:'ESTABLISH CONNECTION',workspace:'COMMAND CENTRE',negotiations:'NEGOTIATION NETWORK',suppliers:'SUPPLIER CONSTELLATION',orders:'DELIVERY CIRCUIT',agreements:'BILATERAL PROTOCOL',settings:'CONTROL SYSTEMS'};
-type Props={mode:SpatialMode;motion:RefObject<SceneMotion>;mobile:boolean;reduced:boolean;visible:boolean;onReady:()=>void;onFailure:()=>void};
+type Props={mode:SpatialMode;motion:RefObject<SceneMotion>;mobile:boolean;reduced:boolean;visible:boolean;contained?:boolean;onReady:()=>void;onFailure:()=>void};
 function Tube({points,color=lime,radius=.018,opacity=1}:{points:number[][];color?:string;radius?:number;opacity?:number}){
  const curve=useMemo(()=>new CatmullRomCurve3(points.map(p=>new Vector3(...p as [number,number,number]))),[points]);
  return <mesh><tubeGeometry args={[curve,40,radius,6,false]}/><meshStandardMaterial color={color} emissive={color} emissiveIntensity={1.3} transparent={opacity<1} opacity={opacity}/></mesh>;
@@ -52,7 +52,7 @@ function Satellites({mode,mobile,reduced}:{mode:SpatialMode;mobile:boolean;reduc
  {mode==='negotiations'||mode==='suppliers'||mode==='workspace'?Array.from({length:3},(_,i)=><Tube key={i} points={[[0,-.9,-.6],[Math.cos(i*2.1)*1.3,.15,-1],[Math.cos(i*2.1)*2.65,Math.sin(i*4.2)*.55+.15,Math.sin(i*2.1)*1.1-.2]]} radius={.008} opacity={.35}/>):null}
  </group>;
 }
-function World({mode,motion,mobile,reduced,visible,onReady}:Omit<Props,'onFailure'>){
+function World({mode,motion,mobile,reduced,visible,contained=false,onReady}:Omit<Props,'onFailure'>){
  const robot=useRef<Group>(null),orbit=useRef<Group>(null),world=useRef<Group>(null),{camera,invalidate,size}=useThree();const t=useRef(0);
  const drawn=useRef(false),readyFrame=useRef(0);
  useEffect(()=>()=>{cancelAnimationFrame(readyFrame.current);drawn.current=false;},[]);
@@ -60,15 +60,19 @@ function World({mode,motion,mobile,reduced,visible,onReady}:Omit<Props,'onFailur
  useEffect(()=>{invalidate();},[mode,mobile,reduced,invalidate]);
  useEffect(()=>{const refresh=()=>{requestAnimationFrame(()=>invalidate());};window.addEventListener('scroll',refresh,{passive:true});window.addEventListener('resize',refresh,{passive:true});return()=>{window.removeEventListener('scroll',refresh);window.removeEventListener('resize',refresh);};},[invalidate]);
  useFrame((_,delta)=>{if(!visible)return;if(!reduced)t.current+=Math.min(delta,.05);const p=motion.current;const k=1-Math.exp(-delta*3);
-  if(robot.current){robot.current.position.y=reduced?0:Math.sin(t.current*1.3)*.075;robot.current.rotation.y=MathUtils.lerp(robot.current.rotation.y,reduced?-.16:p.x*.17-.16,k);}
+  if(robot.current){robot.current.position.y=reduced?0:Math.sin(t.current*1.3)*.075;robot.current.rotation.y=MathUtils.lerp(robot.current.rotation.y,reduced?-.16:(contained?p.x*.08-.12:p.x*.17-.16),k);}
   if(orbit.current&&!reduced){orbit.current.rotation.z=Math.sin(t.current*.2)*.13;orbit.current.rotation.y=t.current*.06;}
-  if(world.current){const height=2*Math.tan(43*Math.PI/360)*10.5;const x=mobile?.1+(p.anchorX-.5)*height*size.width/size.height:1.75;const y=mobile?.1+(.5-p.anchorY)*height:0;world.current.position.x=mobile||reduced?x:MathUtils.lerp(world.current.position.x,x,k);world.current.position.y=mobile||reduced?y:MathUtils.lerp(world.current.position.y,y,k);world.current.rotation.y=MathUtils.lerp(world.current.rotation.y,reduced?-.1:p.x*.055-.1,k);}
-  camera.position.y=MathUtils.lerp(camera.position.y,.45+(reduced||mobile?0:p.scroll*.8-p.y*.13),k);camera.position.z=MathUtils.lerp(camera.position.z,(mobile?10.5:8.8)+(reduced||mobile?0:p.scroll*.6),k);camera.lookAt(mobile?.1:.35,.1,0);
+  if(world.current){
+   if(contained){world.current.position.x=MathUtils.lerp(world.current.position.x,p.x*.08,k);world.current.position.y=MathUtils.lerp(world.current.position.y,-p.y*.05,k);world.current.rotation.y=MathUtils.lerp(world.current.rotation.y,reduced?-.08:p.x*.04-.08,k);}
+   else{const height=2*Math.tan(43*Math.PI/360)*10.5;const x=mobile?.1+(p.anchorX-.5)*height*size.width/size.height:1.75;const y=mobile?.1+(.5-p.anchorY)*height:0;world.current.position.x=mobile||reduced?x:MathUtils.lerp(world.current.position.x,x,k);world.current.position.y=mobile||reduced?y:MathUtils.lerp(world.current.position.y,y,k);world.current.rotation.y=MathUtils.lerp(world.current.rotation.y,reduced?-.1:p.x*.055-.1,k);}
+  }
+  if(contained){camera.position.y=MathUtils.lerp(camera.position.y,.28-(reduced?0:p.y*.05),k);camera.position.z=MathUtils.lerp(camera.position.z,mobile?8.05:7.5,k);camera.lookAt(0,.12,0);}
+  else{camera.position.y=MathUtils.lerp(camera.position.y,.45+(reduced||mobile?0:p.scroll*.8-p.y*.13),k);camera.position.z=MathUtils.lerp(camera.position.z,(mobile?10.5:8.8)+(reduced||mobile?0:p.scroll*.6),k);camera.lookAt(mobile?.1:.35,.1,0);}
  });
  return <>
  <ambientLight intensity={.75}/><directionalLight position={[-4,6,5]} intensity={3} color="#dbffe1"/><pointLight position={[2,0,3]} color={lime} intensity={10} distance={10}/>
  <Environment resolution={mobile?64:128} frames={1}><Lightformer intensity={3} position={[-3,4,3]} scale={[4,5,1]}/><Lightformer intensity={4} position={[3,1,1]} rotation={[0,-Math.PI/2,0]} scale={[3,5,1]} color="#b9ff7a"/><Lightformer intensity={2} position={[0,-3,2]} scale={[5,1,1]}/></Environment>
- <group ref={world} position={[mobile?.1:1.75,mobile?-12:0,0]} scale={mobile?.6:1}>
+ <group ref={world} position={[contained?0:mobile?.1:1.75,mobile&&!contained?-12:0,0]} scale={contained?(mobile?.78:.82):mobile?.6:1}>
   <Portal onDraw={firstDraw}/><group ref={robot}><Courier/></group>
   <group ref={orbit} rotation={[.28,0,-.14]}><mesh rotation={[Math.PI/2,0,0]} position={[0,-.55,0]} scale={[1.35,1,1]}><torusGeometry args={[1.9,.022,8,100]}/><meshStandardMaterial color={lime} emissive={lime} emissiveIntensity={2} metalness={.5} roughness={.2}/></mesh></group>
   <Satellites mode={mode} mobile={mobile} reduced={reduced}/>
