@@ -2,6 +2,8 @@
 
 Updated on 6 November 2026. The original backend/provider implementation has a verified live vertical slice. The user's newer visual instruction supersedes the earlier interface: pitch black, neon green, supplied robot logo and a complete Three.js spatial rebuild across every page.
 
+A fresh requirement audit has reopened supplier participation, room memberships, editable catalogue and eligibility controls, full standing terms, separate order acknowledgment, publication controls and voice/bilingual completeness. The root TODO.md is authoritative for remaining work. The earlier verified slice and test counts do not prove these broader requirements complete.
+
 ## Current parallel work
 
 - Experience agent: all eight page compositions, navigation, onboarding and accessible functional HUDs. Preserve authenticated workflows, immutable approvals, private rooms and real status.

@@ -2,7 +2,7 @@
 
 Business moves smarter.
 
-A local English/Hindi procurement MVP with agent negotiation, exact purchase approvals, independent operating funds and bilaterally bounded standing agreements. All eight pages use a pitch-black, neon-green Three.js world, the supplied logo, robotic typography and accessible spatial controls. Verification passed 162 automated tests and 28 browser checks, with actual desktop/mobile WebGL rendering and focused final readability checks.
+A local English/Hindi procurement MVP in development, with agent negotiation, exact purchase approvals, independent operating funds and bilaterally bounded standing agreements. All eight pages use a pitch-black, neon-green Three.js world, the supplied logo, robotic typography and accessible spatial controls. The committed redesign checkpoint passed 162 automated tests and 28 browser checks. A fresh requirement audit reopened supplier participation, agreement terms, acknowledgment, voice controls and bilingual completeness work in TODO.md; those gaps are not claimed complete.
 
 ## Run locally
 

@@ -4,7 +4,7 @@ import { isAddress, verifyMessage, type Address, type Hex } from 'viem';
 import { z } from 'zod';
 import { atomic, digest, DomainError } from '../domain/procurement';
 import { allInternal, event, list, put, transaction } from './store';
-import { required, settings, suppliers } from './service';
+import { required, settings, suppliers, inventoryAvailability } from './service';
 import { prepareCreateAgreement, prepareAcceptAgreement, prepareAgreementControl, assertSpaContract, prepareExecuteAgreement, readAgreement, verifySpaTransaction, submitSpaExecution } from '../providers/spa';
 import { assertSharedAllowance } from './exposure';
 const address=z.string().refine(isAddress,'A valid EVM signing address is required.');
@@ -43,8 +43,7 @@ export function standingPreflight(tenant:string,id:string,input:unknown){
  assertSharedAllowance(data.amountAtomic);
  if(exposure+data.totalMinor>t.aggregateCapMinor||atomicExposure+BigInt(data.amountAtomic)>BigInt(t.aggregateCapAtomic))throw new DomainError('The agreement aggregate allowance is exhausted.',409);
  if(settings(tenant).goodsReservedMinor+(settings(tenant).goodsSpentMinor||0)+data.totalMinor>settings(tenant).goodsCapMinor)throw new DomainError('The business procurement cap would be exceeded.',409);
- const stockReserved=allInternal('order').filter(o=>o.supplierId===vendor.id&&o.status!=='cancelled').reduce((sum,o)=>sum+Number(o.quantity||0),0)+allInternal('agreement_execution').filter(e=>e.supplierId===vendor.id&&!e.orderId&&e.status!=='rejected').reduce((sum,e)=>sum+Number(e.quantity||0),0);
- if(stockReserved+data.quantity>vendor.stock)throw new DomainError('Current supplier inventory is already reserved.',409);
+ if(data.quantity>inventoryAvailability(vendor.id).availableQuantity)throw new DomainError('Current supplier inventory is already reserved.',409);
  const last=reserved.sort((a,b)=>b.createdAt.localeCompare(a.createdAt))[0];if(last&&Date.now()-Date.parse(last.createdAt)<t.frequencySeconds*1000)throw new DomainError('The signed order cadence has not elapsed.',409);
  return {agreement,execution:{...data,supplierId:vendor.id,agreementId:id,status:'reserved',quoteDigest:digest(data)},existing:false};
 }

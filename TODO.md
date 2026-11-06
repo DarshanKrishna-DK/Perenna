@@ -13,8 +13,27 @@
 - [x] Add the supplied logo and favicon with locally hosted robotic and Hindi fonts.
 - [x] Implement the persistent Three.js world and rebuild the composition of all eight pages.
 - [x] Replace the shared styles with the pitch-black and neon-green spatial design system.
-- [x] Build and serve the redesigned frontend at http://127.0.0.1:3000.
+- [x] Replace the stale production preview with the current saved frontend at http://127.0.0.1:3000.
 - [x] Inspect actual 3D rendering and correct desktop and mobile layout defects on every page.
-- [x] Pass 162 automated tests and 28 accessibility, responsive and realtime browser checks.
+- [x] Pass 162 automated tests and 28 browser checks for the committed redesign checkpoint.
 - [x] Push the verified redesign milestone with a short one-line commit message.
-- [x] Update the final acceptance evidence and hand off the working MVP.
+- [x] Record the verified integration and committed redesign checkpoint with its limitations.
+- [x] Preserve the other session's six modified frontend files while refreshing the local preview.
+- [x] Inspect the current landing page with rendered 3D elements at desktop and mobile sizes without horizontal overflow.
+- [x] Fix development-mode scene readiness cleanup and pass desktop/mobile reduced-motion load and refresh checks.
+- [ ] Finish and verify the other session's latest frontend edits before publishing them.
+- [x] Unify stock reservations across one-off and standing orders and revalidate current paid capacity restrictions.
+- [x] Recover interrupted private inference without replaying calls or releasing another job's reservation.
+- [x] Reconcile uncertain Arkiv publications from their original signed transaction without submitting a duplicate.
+- [x] Implement private-by-default standing-agreement discovery with reviewed publication consent and read-only queries.
+- [ ] Verify one real standing-agreement discovery write after approval of the prepared 0.001 tGLM fee estimate.
+- [ ] Complete the current requirement audit and distinguish product gaps from optional sponsor submission work.
+- [ ] Expose complete request publication review and read-only Arkiv screening refresh in the buyer interface.
+- [ ] Add real business and room memberships so an onboarded supplier can participate across buyer workspaces.
+- [ ] Add editable synthetic supplier controls, no-new-agent screening and visible exclusion and ranking reasons.
+- [ ] Complete standing-agreement specification, delivery-window, acknowledgment and renewal terms.
+- [ ] Separate supplier order acknowledgment from confirmed payment and support unresolved acknowledgment recovery.
+- [ ] Add voice recording discard, finish core Hindi copy and test microphone permission and cancellation states.
+- [ ] Add intentional delayed, cancelled and failed fulfillment simulations with persistent provenance.
+- [ ] Complete onboarding service-area, procurement-preference and consent review.
+- [ ] Continue eligible negotiations after individual supplier failures and add bounded retry jitter.

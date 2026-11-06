@@ -2,13 +2,29 @@ import {z} from 'zod';
 import {digest, DomainError} from '../domain/procurement';
 import {isProviderError} from '../providers/config';
 import {negotiatePrivateOffer} from '../providers/private-inference';
-import {event, get, list, put, transaction} from './store';
+import {db, event, get, list, put, transaction} from './store';
 import {assertIntentOpen, buyerCredibility, recordQuoteRevision, required, screenedSuppliers, settings, usageControls} from './service';
 
 const requestSchema=z.object({supplierId:z.string().min(1).max(120),requestId:z.string().min(8).max(100)}).strict();
 type Context={userId:string;sessionId?:string};
 type PrivateReplyResult={id:string;status:'completed';intentId:string;supplierId:string;quoteId:string;messageId:string;provider:string;providerRequestId:string;quote:Record<string,any>};
 function replyView(job:Record<string,any>,quote:Record<string,any>):PrivateReplyResult{return {id:job.id,status:'completed',intentId:job.intentId,supplierId:job.supplierId,quoteId:job.quoteId,messageId:job.messageId,provider:job.provider,providerRequestId:job.providerRequestId,quote};}
+const privateLeaseMs=300000;
+function leaseExpired(job:Record<string,any>,now:number){const deadline=Number.isFinite(job.leaseUntil)?job.leaseUntil:Date.parse(job.createdAt)+privateLeaseMs;return !Number.isFinite(deadline)||deadline<=now;}
+
+export function recoverInterruptedPrivateNegotiations(now=Date.now()){
+ const rows=db().prepare("SELECT tenant,body FROM records WHERE kind='private_negotiation' AND json_extract(body,'$.status')='running'").all() as {tenant:string;body:string}[];
+ let recovered=0;
+ for(const row of rows){const candidate=JSON.parse(row.body);if(!leaseExpired(candidate,now))continue;
+  transaction(()=>{const job=get('private_negotiation',row.tenant,candidate.id);if(job?.status!=='running'||!leaseExpired(job,now))return;
+   put('private_negotiation',row.tenant,{...job,status:'interrupted',leaseUntil:0,interruptedAt:new Date(now).toISOString(),error:'The private provider request was interrupted. Review recorded usage before a new explicit request. This request will not be replayed.'});
+   const policy=get('settings',row.tenant,row.tenant+'-settings');if(policy&&policy.inferenceOwnerId===job.id){const {inferenceOwnerId,...fields}=policy;put('settings',row.tenant,{...fields,inferenceReserved:Math.max(0,(policy.inferenceReserved??0)-1)});}
+   const intent=get('intent',row.tenant,job.intentId);if(intent&&intent.privateJobId===job.id){const {privateJobId,...fields}=intent;put('intent',row.tenant,{...fields,...(intent.status==='negotiating'?{status:'blocked'}:{})});}
+   event(row.tenant,'private.interrupted','An expired private inference lease was recovered without another provider request.',{intentId:job.intentId,privateJobId:job.id});recovered++;
+  });
+ }
+ return recovered;
+}
 
 export async function requestPrivateAgentReply(tenant:string,intentId:string,input:unknown,context:Context):Promise<PrivateReplyResult>{
   const request=requestSchema.parse(input);
@@ -30,15 +46,18 @@ export async function requestPrivateAgentReply(tenant:string,intentId:string,inp
     const conversation=list('message',tenant).filter(message=>message.intentId===intentId&&message.roomId===roomId&&message.supplierId===request.supplierId&&message.visibility==='private').slice(0,20).reverse().map(message=>({actor:String(message.actor),text:String(message.text)}));
     if(!conversation.length)throw new DomainError('Send a private message before requesting a supplier reply.');
     const ownOffer=list('quote',tenant).filter(quote=>quote.intentId===intentId&&quote.supplierId===request.supplierId).sort((a,b)=>(b.version??0)-(a.version??0))[0];
-    put('private_negotiation',tenant,{id:jobId,intentId,supplierId:request.supplierId,roomId,requestId:request.requestId,requestedBy:context.userId,status:'running',phase:'prepared',intentVersion:intent.version,policyVersion:policy.policyVersion,previousIntentStatus:intent.status});
+    put('private_negotiation',tenant,{id:jobId,intentId,supplierId:request.supplierId,roomId,requestId:request.requestId,requestedBy:context.userId,status:'running',phase:'prepared',leaseUntil:Date.now()+privateLeaseMs,intentVersion:intent.version,policyVersion:policy.policyVersion,previousIntentStatus:intent.status});
     put('settings',tenant,{...policy,inferenceReserved:policy.inferenceReserved+1,inferenceOwnerId:jobId});
     put('intent',tenant,{...intent,status:'negotiating',privateJobId:jobId});
     event(tenant,'private.started','A supplier agent is reviewing its private conversation.',{intentId,supplierId:request.supplierId});
     return {intent,policy,supplier,conversation,ownOffer};
   });
   const assertCurrent=()=>{
+    const job=required('private_negotiation',tenant,jobId);
+    if(job.status!=='running'||leaseExpired(job,Date.now()))throw new DomainError('The private reply lease ended. Review usage before a new explicit request.',409);
     const current=assertIntentOpen(tenant,intentId,prepared.intent.version);
-    if(current.privateJobId!==jobId||settings(tenant).policyVersion!==prepared.policy.policyVersion)throw new DomainError('Request or policy authority changed during the private reply.',409);
+    const policy=settings(tenant);
+    if(current.privateJobId!==jobId||policy.inferenceOwnerId!==jobId||policy.policyVersion!==prepared.policy.policyVersion)throw new DomainError('Request or policy authority changed during the private reply.',409);
     return current;
   };
   try{
@@ -53,12 +72,12 @@ export async function requestPrivateAgentReply(tenant:string,intentId:string,inp
       assertCurrent();
       const text=`Private offer: INR ${(result.terms.unitPriceMinor/100).toFixed(2)} per ${prepared.intent.unit}; delivery in ${result.terms.deliveryDays} ${result.terms.deliveryDays===1?'day':'days'}. Review the structured quote before approval.`;
       const message=put('message',tenant,{intentId,roomId,supplierId:request.supplierId,actor:prepared.supplier.name,text,visibility:'private',provider:result.provider,requestId:result.requestId,quoteId:quote.id,renderedFromStructuredTerms:true});
-      const job=put('private_negotiation',tenant,{...required('private_negotiation',tenant,jobId),status:'completed',phase:'quote_recorded',quoteId:quote.id,messageId:message.id,provider:result.provider,providerRequestId:result.requestId});
+      const job=put('private_negotiation',tenant,{...required('private_negotiation',tenant,jobId),status:'completed',leaseUntil:0,phase:'quote_recorded',quoteId:quote.id,messageId:message.id,provider:result.provider,providerRequestId:result.requestId});
       event(tenant,'private.replied','A private supplier offer was recorded with its provider request reference.',{intentId,supplierId:request.supplierId,quoteId:quote.id});
       return replyView(job,quote);
     });
   }catch(error){
-    transaction(()=>{const current=required('private_negotiation',tenant,jobId);put('private_negotiation',tenant,{...current,status:current.phase==='provider_requested'?'outcome_unknown':'blocked',error:error instanceof DomainError||isProviderError(error)?error.message:'Private negotiation stopped without a verified offer.'});event(tenant,'private.paused','The private reply did not produce an authorized offer. Review usage before retrying.',{intentId,supplierId:request.supplierId});});
+    transaction(()=>{const current=required('private_negotiation',tenant,jobId);if(current.status==='running')put('private_negotiation',tenant,{...current,status:current.phase==='provider_requested'?'outcome_unknown':'blocked',leaseUntil:0,error:error instanceof DomainError||isProviderError(error)?error.message:'Private negotiation stopped without a verified offer.'});event(tenant,'private.paused','The private reply did not produce an authorized offer. Review usage before retrying.',{intentId,supplierId:request.supplierId});});
     throw error;
   }finally{
     transaction(()=>{const policy=settings(tenant);if(policy.inferenceOwnerId===jobId){const {inferenceOwnerId,...fields}=policy;put('settings',tenant,{...fields,inferenceReserved:Math.max(0,policy.inferenceReserved-1)});}const intent=required('intent',tenant,intentId);if(intent.privateJobId===jobId){const {privateJobId,...fields}=intent;put('intent',tenant,{...fields,...(intent.status==='negotiating'?{status:get('private_negotiation',tenant,jobId)?.status==='completed'?'awaiting_approval':prepared.intent.status}:{})});}});

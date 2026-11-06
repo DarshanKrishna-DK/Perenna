@@ -41,6 +41,49 @@ async function captureSpatialPage(page:Page,route:string,project:string){
  return scene;
 }
 
+test('the scene finishes loading with reduced motion on initial load and refresh', async ({page}) => {
+  await page.emulateMedia({reducedMotion:'reduce'});
+  for (let visit=0;visit<2;visit++) {
+    if (visit===0) await page.goto('/',{waitUntil:'domcontentloaded'});
+    else await page.reload({waitUntil:'domcontentloaded'});
+    await expect(page.locator('.spatial-stage')).toHaveAttribute('data-scene-state','ready',{timeout:20000});
+    await expect(page.locator('.app')).toHaveAttribute('data-scene-ready','webgl');
+    await expect(page.locator('.spatial-stage canvas')).toHaveCount(1);
+    await expect(page.locator('.spatial-fallback')).toHaveCount(0);
+  }
+});
+
+test('agreement discovery requires reviewed public consent and exposes read-only search', async ({page},info) => {
+  await register(page);
+  const origin=new URL(page.url()).origin;
+  const supplier='0x2222222222222222222222222222222222222222';
+  const response=await page.request.post('/api/agreements',{headers:{Origin:origin},data:{supplierId:'sup-banyan',item:'coffee beans',unit:'kg',quantity:10,maxUnitPriceMinor:2050,perOrderCapMinor:50000,aggregateCapMinor:100000,perOrderCapAtomic:'50000',aggregateCapAtomic:'100000',buyerAddress:'0x1111111111111111111111111111111111111111',supplierAddress:supplier,payeeAddress:supplier,executorAddress:'0x3333333333333333333333333333333333333333',contractAddress:'0x4444444444444444444444444444444444444444',startsAt:new Date().toISOString(),expiresAt:new Date(Date.now()+86400000).toISOString()}});
+  expect(response.status()).toBe(201);
+  const agreement=await response.json(),projectionDigest='a'.repeat(64),calls:Record<string,any>[]=[];
+  await page.route(`**/api/agreements/${agreement.id}`,async route=>{
+    const body=route.request().postDataJSON();calls.push(body);
+    if(body.action==='prepare-discovery')return route.fulfill({json:{projectionDigest,maximumFeeWei:'1000000000000000',signed:false,submitted:false,publicProjection:{item:'coffee beans',unit:'kg',area:'Mumbai',indexStatus:'proposed',startsMs:Date.now(),expiresMs:Date.now()+86400000,createdMs:Date.now(),agreementVersion:1,indexVersion:1,agreementCommitment:'0x'+'a'.repeat(64),businessCommitment:'0x'+'b'.repeat(64),termsCommitment:'0x'+'c'.repeat(64)}}});
+    if(body.action==='publish-discovery')return route.fulfill({json:{status:'confirmed',fixture:true}});
+    if(body.action==='discover-indexes')return route.fulfill({json:{entities:[{entityKey:'fixture-query-row',item:'coffee beans',area:'Mumbai',indexStatus:'proposed'}],truncated:false}});
+    return route.fulfill({status:409,json:{error:'No live publication or payment is allowed in this test.'}});
+  });
+  await page.goto('/agreements',{waitUntil:'domcontentloaded'});
+  await page.getByText('Public agreement discovery',{exact:true}).click();
+  await page.getByRole('button',{name:'Review public listing',exact:true}).click();
+  const publish=page.getByRole('button',{name:'Publish reviewed listing',exact:true});
+  await expect(publish).toBeDisabled();
+  await expect(page.getByText('0.001',{exact:true})).toBeVisible();
+  await page.getByText('Public commitments and versions',{exact:true}).click();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  await page.locator('.agreement-discovery').screenshot({path:resolve('artifacts/browser',`agreement-discovery-review-${info.project.name}.png`)});
+  await page.getByRole('checkbox',{name:'I approve publication of this exact public projection.',exact:true}).check();
+  await publish.click();
+  expect(calls.find(call=>call.action==='publish-discovery')).toEqual({action:'publish-discovery',confirmPublicDiscovery:true,projectionDigest});
+  await page.getByRole('button',{name:'Query current listings',exact:true}).click();
+  await expect(page.getByRole('status').filter({hasText:'Current matching listings'})).toContainText('1');
+  expect(calls.filter(call=>call.action==='publish-discovery')).toHaveLength(1);
+});
+
 test('all public and authenticated pages render without overflow or client errors', async ({page}, info) => {
   const errors: string[]=[];
   page.on('pageerror', error=>errors.push(error.message));

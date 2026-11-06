@@ -12,7 +12,7 @@ import type { CreateEntityOptions } from "@arkiv-network/sdk";
 import { digest } from "../domain/procurement";
 import { ARKIV_REGISTRY, captureArkivCreate, captureArkivSignedHash, checkpointArkivWriter, claimArkivWriter, failArkivWriter, reserveArkivFee } from "./arkiv-writer";
 
-const Requests = defineSchema("perenna.intent.v2", { item:str().indexed(),unit:str(),quantity:u64(),area:str().indexed(),requestExpiresMs:u64().indexed(),deliveryDeadlineMs:u64().indexed(),deliveryTimezone:str(),requestVersion:u64().indexed(),policyVersion:u64().indexed(),createdMs:u64(),businessCommitment:str().indexed(),requestCommitment:str().indexed(),schemaVersion:str() });
+export const Requests = defineSchema("perenna.intent.v2", { item:str().indexed(),unit:str(),quantity:u64(),area:str().indexed(),requestExpiresMs:u64().indexed(),deliveryDeadlineMs:u64().indexed(),deliveryTimezone:str(),requestVersion:u64().indexed(),policyVersion:u64().indexed(),createdMs:u64(),businessCommitment:str().indexed(),requestCommitment:str().indexed(),schemaVersion:str() });
 const publicIntentSchema=z.object({item:z.string().min(1),unit:z.string().min(1),quantity:z.number().int().positive().safe(),area:z.string().min(1),requestExpiresMs:z.number().int().positive().safe(),deliveryDeadlineMs:z.number().int().positive().safe(),deliveryTimezone:z.string().min(1).max(80).refine(value=>{try{new Intl.DateTimeFormat('en',{timeZone:value});return true;}catch{return false;}}),requestVersion:z.number().int().positive().safe(),policyVersion:z.number().int().positive().safe(),createdMs:z.number().int().positive().safe(),businessCommitment:z.string().regex(/^0x[0-9a-fA-F]{64}$/),requestCommitment:z.string().regex(/^0x[0-9a-fA-F]{64}$/)}).strict();
 export type PublicIntent=z.infer<typeof publicIntentSchema>;
 function approvedPublicIntent(value:PublicIntent){const parsed=publicIntentSchema.safeParse(value);if(!parsed.success||parsed.data.requestExpiresMs<=Date.now()||parsed.data.deliveryDeadlineMs<=Date.now()||parsed.data.requestExpiresMs>parsed.data.deliveryDeadlineMs||parsed.data.createdMs>Date.now())throw new ProviderError("Arkiv","The public request requires valid server-issued version, policy, time and opaque commitment metadata.","INVALID_INTENT");return parsed.data;}
@@ -37,7 +37,7 @@ export async function discoverIntents(expectedWriter:Address,area:string,expecte
  }catch(error){if(isProviderError(error))throw error;throw new ProviderError("Arkiv","Current-version request discovery failed. No private transport details are exposed.");}
 }
 
-async function quoteCreate(operation:unknown,expiresMs:number,prepare:(wallet:ReturnType<typeof createWalletClient>,options:CreateEntityOptions)=>Promise<unknown>){
+export async function quoteCreate(operation:unknown,expiresMs:number,prepare:(wallet:ReturnType<typeof createWalletClient>,options:CreateEntityOptions)=>Promise<unknown>){
  const writer=secret("Arkiv","ARKIV_WRITER_ADDRESS");if(!isAddress(writer))throw new ProviderError("Arkiv","Configure the public writer address before unsigned preparation.","CONFIGURATION_REQUIRED");
  const refuse=async():Promise<never>=>{throw new ProviderError("Arkiv","Signing is blocked during fee preparation.","WRITE_BLOCKED");};
  const account=toAccount({address:writer,signMessage:refuse,signTransaction:refuse,signTypedData:refuse});
@@ -58,9 +58,9 @@ export async function prepareIntentPublication(intent:PublicIntent){
  const values=intentValues(intent);
  return quoteCreate({kind:"intent",...intent},intent.requestExpiresMs,(wallet,options)=>wallet.createEntity(Requests,values,options));
 }
-type WriteResult={entityKey:Hex;txHash:Hex;expiresAt:bigint};
-type WriteAuthorization={estimatedGas?:bigint;maxFeeWei:bigint};
-async function guardedCreate<T>(operation:unknown,expiresMs:number,authorization:WriteAuthorization,prepare:(wallet:ReturnType<typeof createWalletClient>,options:CreateEntityOptions)=>Promise<unknown>,verify:(result:WriteResult,writer:Address)=>Promise<T>){
+export type WriteResult={entityKey:Hex;txHash:Hex;expiresAt:bigint};
+export type WriteAuthorization={estimatedGas?:bigint;maxFeeWei:bigint};
+export async function guardedCreate<T>(operation:unknown,expiresMs:number,authorization:WriteAuthorization,prepare:(wallet:ReturnType<typeof createWalletClient>,options:CreateEntityOptions)=>Promise<unknown>,verify:(result:WriteResult,writer:Address)=>Promise<T>){
  requireEnabled("Arkiv","ARKIV_WRITES_ENABLED");requireEnabled("Arkiv","ARKIV_EXCLUSIVE_WRITER");
  const key=secret("Arkiv","ARKIV_PRIVATE_KEY");if(!/^0x[0-9a-fA-F]{64}$/.test(key))throw new ProviderError("Arkiv","The authorized writer is not configured.","CONFIGURATION_REQUIRED");
  let account:ReturnType<typeof privateKeyToAccount>;try{account=privateKeyToAccount(key as Hex);}catch{throw new ProviderError("Arkiv","The local writer key is invalid.","CONFIGURATION_REQUIRED");}const expected=secret("Arkiv","ARKIV_WRITER_ADDRESS");
@@ -116,7 +116,7 @@ export async function publishIntent(intent:PublicIntent,authorization:WriteAutho
  });
 }
 
-const Evidence = defineSchema("perenna.evidence.v2", { evidenceDigest:str().indexed(), subjectCommitment:str().indexed(), issuer:addr().indexed(), role:str().indexed(), outcome:str(), simulated:bool(), expiresMs:u64().indexed(), signature:bytes(), referenceCommitment:str(), schemaVersion:str() });
+export const Evidence = defineSchema("perenna.evidence.v2", { evidenceDigest:str().indexed(), subjectCommitment:str().indexed(), issuer:addr().indexed(), role:str().indexed(), outcome:str(), simulated:bool(), expiresMs:u64().indexed(), signature:bytes(), referenceCommitment:str(), schemaVersion:str() });
 const evidenceProjection = z.object({evidenceDigest:z.string().regex(/^0x[0-9a-fA-F]{64}$/),subjectCommitment:z.string().regex(/^0x[0-9a-fA-F]{64}$/),issuer:z.string().regex(/^0x[0-9a-fA-F]{40}$/),role:z.enum(["buyer","supplier","reviewer"]),outcome:z.enum(["received","fulfilled","late","disputed","cancelled"]),simulated:z.boolean(),expiresMs:z.number().int().positive(),signature:z.string().regex(/^0x[0-9a-fA-F]{130}$/),referenceCommitment:z.string().regex(/^0x[0-9a-fA-F]{64}$/)}).strict();
 export async function prepareEvidencePublication(projection:unknown){
  const record=evidenceProjection.parse(projection);if(record.expiresMs<=Date.now())throw new ProviderError("Arkiv","Evidence has already expired.","INVALID_EVIDENCE");
@@ -138,4 +138,20 @@ export async function discoverEvidence(expectedWriter:Address,subjectCommitment:
  if(!isAddress(expectedWriter)||!/^0x[0-9a-fA-F]{64}$/.test(subjectCommitment))throw new ProviderError("Arkiv","Expected writer and subject commitment are required.","INVALID_QUERY");
  try{return await arkivClient().select().from(Evidence).where(and(eq("$creator",addr(expectedWriter)),eq("subjectCommitment",subjectCommitment),gt("expiresMs",u64(BigInt(Date.now()))))).limit(100).fetch();}
  catch{throw new ProviderError("Arkiv","Signed evidence retrieval failed.");}
+}
+
+export async function reconcileIntentPublication(projection:unknown){
+ const intent=publicIntentSchema.parse(projection);const {reconcileArkivCreate}=await import('./arkiv-reconciliation');
+ return reconcileArkivCreate({kind:'intent',...intent},(wallet,options)=>wallet.createEntity(Requests,intentValues(intent),options),async(result,writer)=>{
+  const entity=await arkivClient().getEntity(result.entityKey,Requests);verifyMetadata(entity,result,writer);
+  if(entity.schemaVersion.value!=='2'||!Object.entries(intent).every(([name,value])=>typeof value==='number'?BigInt(rowValue(entity,name))===BigInt(value):rowValue(entity,name)===value))throw new ProviderError('Arkiv','Recovered request content differs from the frozen projection.','READBACK_MISMATCH');
+ });
+}
+export async function reconcileEvidencePublication(projection:unknown){
+ const record=evidenceProjection.parse(projection);const {reconcileArkivCreate}=await import('./arkiv-reconciliation');
+ const values={...record,issuer:addr(record.issuer as Address),expiresMs:u64(BigInt(record.expiresMs)),signature:new Uint8Array(Buffer.from(record.signature.slice(2),'hex')),schemaVersion:'2'};
+ return reconcileArkivCreate({kind:'evidence',...record},(wallet,options)=>wallet.createEntity(Evidence,values,options),async(result,writer)=>{
+  const entity=await arkivClient().getEntity(result.entityKey,Evidence);verifyMetadata(entity,result,writer);
+  if(entity.schemaVersion.value!=='2'||!Object.entries(record).every(([name,value])=>{const actual=rowValue(entity,name);return typeof value==='number'?BigInt(actual)===BigInt(value):typeof value==='string'&&value.startsWith('0x')?String(actual).toLowerCase()===value.toLowerCase():actual===value;}))throw new ProviderError('Arkiv','Recovered evidence content differs from the frozen projection.','READBACK_MISMATCH');
+ });
 }

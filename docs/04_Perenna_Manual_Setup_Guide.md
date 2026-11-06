@@ -2,14 +2,15 @@
 
 ## What you still need to do
 
-Updated on 6 November 2026. The backend, bounded live integrations and all eight rebuilt Three.js pages are verified. The final build passed 162 automated tests and 28 browser checks, plus focused final readability checks. The local application runs at http://127.0.0.1:3000.
+Updated on 6 November 2026. A fresh requirement audit identified additional product gaps, tracked in the root TODO.md. Stock and capacity checks, interrupted-job recovery and Arkiv publication reconciliation are now fixed. The current recovery/discovery source passed 204 independent automated tests, TypeScript, 32 browser checks and an isolated production build; the expanded projection review also passed its focused desktop/mobile checks. The current saved frontend runs at http://127.0.0.1:3000 in development mode. Another session's design edits remain preserved and unpublished.
 
 - Review the rebuilt interface at http://127.0.0.1:3000 and its retained live receipts.
 - Use auth.email and auth.password from the private local .data/live-mvp-client.json file to inspect the retained verification workspace.
 - Rotate the test keys after the working MVP is ready, as you requested. This is not a current build gate.
 - To rerun paid inference or publish more records, provide a new explicit bounded allowance first. The existing inference and Arkiv allowances are exhausted. No further spending is required to review the retained demo.
+- Approve or leave paused the one additional coarse agreement listing already prepared in .data/live-arkiv-standing-discovery-review.json; its unsigned maximum fee estimate is 0.001 test tGLM.
 
-No additional account setup, faucet, wallet funding or renewed approval is blocking the current build. Paid inference, Arkiv writes and Hedera execution flags are paused in the private local configuration after verification.
+Local implementation and testing can continue without further spending. Live verification of new Arkiv standing-agreement discovery will require a fresh explicit write allowance after its exact public projection and unsigned fee preparation are reviewable. Paid inference, Arkiv writes and Hedera execution flags remain paused in the private local configuration.
 
 ## Verified integration checkpoint
 

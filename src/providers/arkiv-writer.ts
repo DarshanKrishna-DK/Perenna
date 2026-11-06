@@ -62,3 +62,12 @@ export function reserveArkivFee(claim:ArkivWriterClaim,cost:bigint,totalCap:bigi
 export function captureArkivSignedHash(claim:ArkivWriterClaim,signedTransaction:Hex){const hash=keccak256(signedTransaction);checkpointArkivWriter(claim,'submitting',{transactionHash:hash,signedTransaction});return hash;}
 export function failArkivWriter(claim:ArkivWriterClaim){const current=get('arkiv_operation',scope,claim.operationId);if(current?.status==='verified')return;checkpointArkivWriter(claim,current?.transactionHash?'unknown':'not_submitted');}
 
+/** Internal recovery access. Never return this journal, which contains signed bytes, through an API. */
+export function arkivOperation(writer:string,operation:unknown){return get('arkiv_operation',scope,'arkiv-operation-'+digest({writer:writer.toLowerCase(),operation}));}
+export function hasArkivOperation(operation:unknown){const fingerprint=digest(operation);return allInternal('arkiv_operation').some(record=>digest(record.operation)===fingerprint);}
+export function finishArkivReconciliation(writer:string,operation:unknown,status:'verified'|'reverted',details:Record<string,unknown>){
+ return transaction(()=>{const current=arkivOperation(writer,operation);if(!current||digest(current.operation)!==digest(operation))fail('The frozen publication operation changed.','READBACK_MISMATCH');
+ const saved=put('arkiv_operation',scope,{...current,...details,status});const id='arkiv-writer-'+writer.toLowerCase();const lock=get('arkiv_writer',scope,id);
+ if(lock?.operationId===current!.id)put('arkiv_writer',scope,{...lock,status:'idle'});return saved;});
+}
+

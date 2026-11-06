@@ -55,7 +55,7 @@ function Satellites({mode,mobile,reduced}:{mode:SpatialMode;mobile:boolean;reduc
 function World({mode,motion,mobile,reduced,visible,onReady}:Omit<Props,'onFailure'>){
  const robot=useRef<Group>(null),orbit=useRef<Group>(null),world=useRef<Group>(null),{camera,invalidate,size}=useThree();const t=useRef(0);
  const drawn=useRef(false),readyFrame=useRef(0);
- useEffect(()=>()=>cancelAnimationFrame(readyFrame.current),[]);
+ useEffect(()=>()=>{cancelAnimationFrame(readyFrame.current);drawn.current=false;},[]);
  const firstDraw=()=>{if(drawn.current)return;drawn.current=true;readyFrame.current=requestAnimationFrame(()=>{readyFrame.current=requestAnimationFrame(onReady);});};
  useEffect(()=>{invalidate();},[mode,mobile,reduced,invalidate]);
  useEffect(()=>{const refresh=()=>{requestAnimationFrame(()=>invalidate());};window.addEventListener('scroll',refresh,{passive:true});window.addEventListener('resize',refresh,{passive:true});return()=>{window.removeEventListener('scroll',refresh);window.removeEventListener('resize',refresh);};},[invalidate]);
