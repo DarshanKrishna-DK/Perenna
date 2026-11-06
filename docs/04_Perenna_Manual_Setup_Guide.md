@@ -2,7 +2,7 @@
 
 ## What you still need to do
 
-Updated on 6 November 2026. The expanded implementation passed 305 automated tests, TypeScript, an isolated production build and an 82-case desktop/mobile browser checkpoint. It includes supplier participation, membership consent, complete standing terms, separate acknowledgment, ranking and voice cleanup. Session-expiry recovery passed both viewports; feature checkpoint d8c328f is pushed to feat/mvp and the remaining provider gate is tracked in the root TODO.md. The saved frontend runs at http://127.0.0.1:3000; existing design edits are preserved.
+Updated on 6 November 2026. The expanded implementation passed 305 automated tests, TypeScript, an isolated production build and an 82-case desktop/mobile browser checkpoint. It includes supplier participation, membership consent, complete standing terms, separate acknowledgment, ranking and voice cleanup. Session-expiry recovery passed both viewports; feature checkpoint d8c328f is pushed to feat/mvp and the remaining provider gate is tracked in the root TODO.md. The frontend can be started at http://127.0.0.1:3000 with npm.cmd run dev; the preview is currently off to save memory and existing design edits are preserved.
 
 - Review the rebuilt interface at http://127.0.0.1:3000 and its retained live receipts.
 - Use auth.email and auth.password from the private local .data/live-mvp-client.json file to inspect the retained verification workspace.
@@ -11,6 +11,14 @@ Updated on 6 November 2026. The expanded implementation passed 305 automated tes
 - English/Hindi microphone capture is owner-confirmed; optionally check personal speaker playback separately.
 
 No spending is required to review the retained demo. The published listing refers to a separate unsigned, unfunded proposal and does not accept or activate it. Its one-write allowance is consumed. Inference and financial execution flags remain paused in the private local configuration. Do not reset usage history. Existing paid-order and agreement receipts remain available even while external execution is paused.
+
+## Moving to another folder or Codex account
+
+Copying files does not transfer this conversation or its saved goal. Start a new goal in the other account and instruct it to continue from TODO.md, AGENTS.md and docs/03_Perenna_Codex_Master_Prompt.md. Read the MVP specification and existing evidence before making changes.
+
+Privately preserve .env.local and .data, including the actual SQLite database and its journals, to retain accounts, receipts, approvals and consumed budgets. Update absolute paths such as PERENNA_DB_PATH if present. Keep execution paused until that state is verified; missing history does not renew any allowance. The current totals are 28 inference attempts against 30 approved, six consumed Arkiv writes, and the retained Hedera upper bound in this guide.
+
+Dependencies can be reinstalled with npm.cmd ci; node_modules and .next do not need to move. Copy the project .agents skills if wanted, and reconnect any account-specific MCPs and GitHub access separately. Perenna project processes and preview ports were absent at the cleanup check. Start npm.cmd run dev only when the preview is needed again.
 
 ## Verified integration checkpoint
 

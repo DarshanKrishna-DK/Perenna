@@ -1,5 +1,8 @@
 # Perenna MVP to-do
 
+- [x] Check unused project processes: no Perenna build, test or server processes and no port 3000/3001 listeners remain; leave other projects and shared MCPs untouched.
+- [x] Document folder/account handoff in the manual guide; a new Codex account needs a new goal and preserved private state.
+
 - [x] Resume the complete demo MVP build after the latest user instruction; preserve all existing edits.
 - [x] Record ten additional authorized mainnet-billed 0G calls with a 512-token output cap; keep other execution allowances unchanged.
 - [x] Pass all 82 desktop/mobile browser checks plus 305 automated tests, TypeScript and the final production build.
@@ -7,7 +10,7 @@
 - [x] Record six original-route failures and two approved alternate-route HTTP 502 failures; retain two attempts and keep inference paused.
 - [x] Fix negotiated standing-price scheduling, paused-worker queue preservation and pre-broadcast authority checks with focused tests.
 - [x] Prepare one current unsigned and unfunded standing-discovery proposal with an actual 0.001 test tGLM fee estimate.
-- [x] Stop the isolated production verification server; retain the existing preview at http://127.0.0.1:3000.
+- [x] Stop the isolated production verification servers after testing; the preview is currently off to save memory.
 - [x] Push the recovery and discovery checkpoint as 7ccdace with 204 automated tests, 32 browser checks and an isolated production build.
 - [x] Review and verify the expanded implementation while preserving the other session's design edits.
 - [x] Push verified feature checkpoint d8c328f and the demo instructions to GitHub feat/mvp.
